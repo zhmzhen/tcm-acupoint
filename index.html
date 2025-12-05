@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>中医穴位养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #8B4513;
+            --primary-light: #D2691E;
+            --bg: #FDF5E6;
+            --card-bg: #FFFAF0;
+            --text: #4A3728;
+            --text-light: #8B7355;
+            --accent: #228B22;
+            --warning: #CD853F;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        /* 顶部标题 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px 16px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* 搜索框 */
+        .search-container {
+            padding: 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid #E8DCC8;
+        }
+        
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 25px;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgba(139,69,19,0.1);
+        }
+        
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 12px 16px;
+            font-size: 16px;
+            background: transparent;
+            outline: none;
+        }
+        
+        .search-box button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 22px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        
+        /* 症状标签 */
+        .symptom-tags {
+            padding: 16px;
+        }
+        
+        .symptom-tags h3 {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+        
+        .tags-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tag {
+            background: white;
+            border: 1px solid #E8DCC8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tag:active, .tag.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* 结果区域 */
+        .results {
+            padding: 16px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .result-header h2 {
+            font-size: 18px;
+            color: var(--primary);
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* 穴位卡片 */
+        .acupoint-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(139,69,19,0.08);
+        }
+        
+        .acupoint-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .acupoint-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 14px;
+        }
+        
+        .acupoint-title h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .acupoint-title span {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .acupoint-section {
+            margin-bottom: 16px;
+        }
+        
+        .acupoint-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .section-title i {
+            margin-right: 8px;
+            width: 20px;
+        }
+        
+        .section-content {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
+            padding-left: 28px;
+        }
+        
+        .section-content ul {
+            list-style: none;
+        }
+        
+        .section-content li {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 6px;
+        }
+        
+        .section-content li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary-light);
+        }
+        
+        /* 按摩参数 */
+        .massage-params {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .param-item {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .param-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .param-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        /* 饮食建议卡片 */
+        .diet-card {
+            background: linear-gradient(135deg, #F0FFF0 0%, #E8F5E9 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+        
+        .diet-card .section-title {
+            color: var(--accent);
+        }
+        
+        .food-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .food-tag {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+        
+        .food-tag.good {
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .food-tag.avoid {
+            border: 1px solid #CD5C5C;
+            color: #CD5C5C;
+        }
+        
+        /* 穴位图片区域 */
+        .acupoint-image {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .acupoint-image svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .acupoint-image .image-caption {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+        
+        /* 食物图标 */
+        .food-item {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 4px;
+        }
+        
+        .food-item.good {
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .food-item.avoid {
+            border: 1px solid #CD5C5C;
+            color: #CD5C5C;
+        }
+        
+        .food-item .food-icon {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        .food-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        /* 注意事项 */
+        .notice {
+            background: #FFF8DC;
+            border-left: 4px solid var(--warning);
+            padding: 12px 16px;
+            margin-top: 16px;
+            border-radius: 0 12px 12px 0;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .notice i {
+            color: var(--warning);
+            margin-right: 8px;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 人体图页面 */
+        .body-map {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .body-container {
+            position: relative;
+            display: inline-block;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .body-container img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .body-part {
+            position: absolute;
+            background: rgba(139,69,19,0.2);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .body-part:hover, .body-part:active {
+            background: rgba(139,69,19,0.4);
+        }
+        
+        .body-part span {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            white-space: nowrap;
+            color: var(--text);
+        }
+        
+        /* 简化的身体部位选择 */
+        .body-parts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+        
+        .body-part-btn {
+            background: var(--card-bg);
+            border: 1px solid #E8DCC8;
+            border-radius: 12px;
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .body-part-btn:active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .body-part-btn i {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--primary);
+        }
+        
+        .body-part-btn:active i {
+            color: white;
+        }
+        
+        .body-part-btn span {
+            font-size: 14px;
+        }
+        
+        /* 收藏页面 */
+        .favorites-list {
+            padding: 16px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .acupoint-card {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏥 中医穴位养生</h1>
+        <p>身体不适？找准穴位，科学调理</p>
+    </div>
+
+    <!-- 首页 -->
+    <div class="page active" id="page-home">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="输入症状，如：头痛、失眠、颈椎痛...">
+                <button onclick="searchSymptom()"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        
+        <div class="symptom-tags">
+            <h3>🔥 常见症状</h3>
+            <div class="tags-wrapper">
+                <span class="tag" onclick="selectSymptom('头痛')">头痛</span>
+                <span class="tag" onclick="selectSymptom('失眠')">失眠</span>
+                <span class="tag" onclick="selectSymptom('颈椎痛')">颈椎痛</span>
+                <span class="tag" onclick="selectSymptom('肩周炎')">肩周炎</span>
+                <span class="tag" onclick="selectSymptom('腰痛')">腰痛</span>
+                <span class="tag" onclick="selectSymptom('胃痛')">胃痛</span>
+                <span class="tag" onclick="selectSymptom('感冒')">感冒</span>
+                <span class="tag" onclick="selectSymptom('眼疲劳')">眼疲劳</span>
+                <span class="tag" onclick="selectSymptom('便秘')">便秘</span>
+                <span class="tag" onclick="selectSymptom('痛经')">痛经</span>
+                <span class="tag" onclick="selectSymptom('焦虑')">焦虑</span>
+                <span class="tag" onclick="selectSymptom('疲劳')">疲劳</span>
+            </div>
+        </div>
+        
+        <div class="symptom-tags">
+            <h3>💆 日常保健</h3>
+            <div class="tags-wrapper">
+                <span class="tag" onclick="selectSymptom('提神醒脑')">提神醒脑</span>
+                <span class="tag" onclick="selectSymptom('增强免疫')">增强免疫</span>
+                <span class="tag" onclick="selectSymptom('美容养颜')">美容养颜</span>
+                <span class="tag" onclick="selectSymptom('助消化')">助消化</span>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <!-- 搜索结果将在这里显示 -->
+        </div>
+    </div>
+
+    <!-- 身体部位页面 -->
+    <div class="page" id="page-body">
+        <div class="symptom-tags">
+            <h3>👆 点击身体部位查看相关穴位</h3>
+        </div>
+        <div class="body-parts-grid">
+            <div class="body-part-btn" onclick="selectBodyPart('头部')">
+                <i class="fas fa-head-side"></i>
+                <span>头部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('面部')">
+                <i class="fas fa-smile"></i>
+                <span>面部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('颈部')">
+                <i class="fas fa-user"></i>
+                <span>颈部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('肩部')">
+                <i class="fas fa-child"></i>
+                <span>肩部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('背部')">
+                <i class="fas fa-male"></i>
+                <span>背部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('胸腹')">
+                <i class="fas fa-heart"></i>
+                <span>胸腹</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('手臂')">
+                <i class="fas fa-hand-paper"></i>
+                <span>手臂</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('手部')">
+                <i class="fas fa-hand-point-up"></i>
+                <span>手部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('腰部')">
+                <i class="fas fa-user-injured"></i>
+                <span>腰部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('腿部')">
+                <i class="fas fa-walking"></i>
+                <span>腿部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('膝部')">
+                <i class="fas fa-running"></i>
+                <span>膝部</span>
+            </div>
+            <div class="body-part-btn" onclick="selectBodyPart('足部')">
+                <i class="fas fa-shoe-prints"></i>
+                <span>足部</span>
+            </div>
+        </div>
+        
+        <div class="results" id="body-results">
+            <!-- 部位穴位结果 -->
+        </div>
+    </div>
+
+    <!-- 收藏页面 -->
+    <div class="page" id="page-favorites">
+        <div class="favorites-list" id="favorites-list">
+            <div class="empty-state">
+                <i class="fas fa-bookmark"></i>
+                <p>暂无收藏</p>
+                <p style="font-size: 13px; margin-top: 8px;">点击穴位卡片上的收藏按钮添加</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('home')">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('body')">
+            <i class="fas fa-user"></i>
+            <span>人体穴位</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('favorites')">
+            <i class="fas fa-bookmark"></i>
+            <span>收藏</span>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
