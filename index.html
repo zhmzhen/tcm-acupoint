@@ -360,6 +360,41 @@
             line-height: 1.5;
         }
         
+        /* 穴位定位卡片（无图片时显示） */
+        .acupoint-location-card {
+            background: linear-gradient(135deg, #FFF8DC 0%, #FAEBD7 100%);
+            border: 2px dashed var(--primary-light);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+        }
+        
+        .location-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .location-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .location-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .location-desc {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.6;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
         /* 食物图标 */
         .food-item {
             display: inline-flex;
@@ -556,6 +591,132 @@
         .acupoint-card {
             animation: fadeIn 0.3s ease;
         }
+        
+        /* 每日卡片容器 */
+        .daily-cards {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+        }
+        
+        /* 每日穴位学习卡片 */
+        .daily-acupoint, .daily-diet {
+            min-width: calc(100% - 32px);
+            flex-shrink: 0;
+            padding: 16px;
+            border-radius: 16px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            scroll-snap-align: start;
+        }
+        
+        .daily-acupoint {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .daily-diet {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+        
+        .daily-acupoint:active, .daily-diet:active {
+            transform: scale(0.98);
+        }
+        
+        @media (min-width: 500px) {
+            .daily-cards {
+                flex-wrap: wrap;
+            }
+            .daily-acupoint, .daily-diet {
+                min-width: calc(50% - 22px);
+            }
+        }
+        
+        .daily-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .daily-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        
+        .daily-title {
+            font-size: 16px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .daily-date {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .daily-content {
+            margin-bottom: 8px;
+        }
+        
+        .daily-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        
+        .daily-desc {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .daily-tip {
+            font-size: 12px;
+            text-align: right;
+            opacity: 0.7;
+        }
+        
+        /* 学习进度 */
+        .learn-progress {
+            margin: 0 16px 16px;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .progress-text {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .progress-count {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* 学习徽章 */
+        .learn-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .learn-badge i {
+            margin-right: 6px;
+        }
     </style>
 </head>
 <body>
@@ -566,6 +727,37 @@
 
     <!-- 首页 -->
     <div class="page active" id="page-home">
+        <!-- 每日卡片容器 -->
+        <div class="daily-cards">
+            <!-- 每日穴位学习卡片 -->
+            <div class="daily-acupoint" id="daily-acupoint" onclick="showDailyAcupoint()">
+                <div class="daily-header">
+                    <span class="daily-icon">📖</span>
+                    <span class="daily-title">每日一穴</span>
+                    <span class="daily-date" id="daily-date"></span>
+                </div>
+                <div class="daily-content">
+                    <div class="daily-name" id="daily-name">加载中...</div>
+                    <div class="daily-desc" id="daily-desc"></div>
+                </div>
+                <div class="daily-tip">点击查看详情 →</div>
+            </div>
+            
+            <!-- 每日饮食建议卡片 -->
+            <div class="daily-diet" id="daily-diet" onclick="showDailyDiet()">
+                <div class="daily-header">
+                    <span class="daily-icon">🥗</span>
+                    <span class="daily-title">节气饮食</span>
+                    <span class="daily-date" id="diet-solar-term"></span>
+                </div>
+                <div class="daily-content">
+                    <div class="daily-name" id="diet-principle">加载中...</div>
+                    <div class="daily-desc" id="diet-foods"></div>
+                </div>
+                <div class="daily-tip">点击查看详情 →</div>
+            </div>
+        </div>
+        
         <div class="search-container">
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="输入症状，如：头痛、失眠、颈椎痛...">
