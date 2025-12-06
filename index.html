@@ -1281,6 +1281,45 @@
         .tide-tip-list li {
             margin-bottom: 4px;
         }
+        
+        /* 城市选择器 */
+        .city-selector {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .selector-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .city-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .city-tag {
+            padding: 6px 12px;
+            background: #e3f2fd;
+            color: #0277bd;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .city-tag:hover {
+            background: #bbdefb;
+        }
+        
+        .city-tag.active {
+            background: #0077b6;
+            color: white;
+        }
     </style>
 </head>
 <body>

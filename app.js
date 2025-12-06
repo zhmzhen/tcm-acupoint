@@ -535,20 +535,96 @@ const tideData = [
     }
 ];
 
-// 获取今日潮汐
-function getDailyTide() {
-    const today = new Date();
-    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-    return tideData[dayOfYear % tideData.length];
+// 城市坐标数据（用于距离计算）
+const tideLocations = [
+    { index: 0, name: '山东青岛', lat: 36.067, lng: 120.383 },
+    { index: 1, name: '浙江舟山', lat: 29.983, lng: 122.200 },
+    { index: 2, name: '广东湛江', lat: 21.267, lng: 110.350 },
+    { index: 3, name: '福建厦门', lat: 24.450, lng: 118.067 },
+    { index: 4, name: '辽宁大连', lat: 38.917, lng: 121.600 },
+    { index: 5, name: '海南三亚', lat: 18.250, lng: 109.500 },
+    { index: 6, name: '江苏连云港', lat: 34.600, lng: 119.217 },
+    { index: 7, name: '广西北海', lat: 21.483, lng: 109.117 }
+];
+
+// 当前选中的潮汐城市索引
+let currentTideIndex = 0;
+
+// 计算两点之间的距离（简化版，使用欧几里得距离）
+function calculateDistance(lat1, lng1, lat2, lng2) {
+    const latDiff = lat1 - lat2;
+    const lngDiff = lng1 - lng2;
+    return Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
 }
 
-// 初始化潮汐
+// 根据位置找到最近的沿海城市
+function findNearestTideCity(userLat, userLng) {
+    let minDistance = Infinity;
+    let nearestIndex = 0;
+    
+    tideLocations.forEach(city => {
+        const distance = calculateDistance(userLat, userLng, city.lat, city.lng);
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestIndex = city.index;
+        }
+    });
+    
+    return nearestIndex;
+}
+
+// 获取当前潮汐数据
+function getDailyTide() {
+    return tideData[currentTideIndex];
+}
+
+// 初始化潮汐（使用地理定位）
 function initDailyTide() {
-    const tide = getDailyTide();
     const today = new Date();
     document.getElementById('tide-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
+    
+    // 先显示默认城市（青岛）
+    currentTideIndex = 0;
+    updateTideDisplay();
+    
+    // 尝试获取用户位置
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            // 成功获取位置
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+                currentTideIndex = findNearestTideCity(userLat, userLng);
+                updateTideDisplay();
+                console.log(`定位成功：${userLat}, ${userLng}，最近城市：${tideData[currentTideIndex].location}`);
+            },
+            // 获取位置失败
+            (error) => {
+                console.log('定位失败，使用默认城市（青岛）', error.message);
+                // 保持默认城市
+            },
+            // 定位选项
+            {
+                enableHighAccuracy: false,
+                timeout: 5000,
+                maximumAge: 300000 // 5分钟缓存
+            }
+        );
+    }
+}
+
+// 更新潮汐显示
+function updateTideDisplay() {
+    const tide = getDailyTide();
     document.getElementById('tide-name').textContent = tide.location;
     document.getElementById('tide-desc').textContent = `${tide.region} · 高潮${tide.highTide1}`;
+}
+
+// 切换潮汐城市
+function switchTideCity(index) {
+    currentTideIndex = index;
+    updateTideDisplay();
+    showDailyTide(); // 刷新详情页
 }
 
 // 显示潮汐详情
@@ -562,6 +638,15 @@ function showDailyTide() {
             <button class="back-btn" onclick="hideResults()">
                 <i class="fas fa-times"></i> 关闭
             </button>
+        </div>
+        
+        <div class="city-selector">
+            <div class="selector-label">📍 切换城市：</div>
+            <div class="city-tags">
+                ${tideLocations.map((city, i) => `
+                    <span class="city-tag ${i === currentTideIndex ? 'active' : ''}" onclick="switchTideCity(${i})">${city.name.replace(/^.+?(?=[\u4e00-\u9fa5])/, '')}</span>
+                `).join('')}
+            </div>
         </div>
         
         <div class="tide-detail-card">
