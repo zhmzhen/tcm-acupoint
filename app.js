@@ -153,11 +153,1309 @@ function showDailyAcupoint() {
     resultsDiv.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 页面加载时初始化每日穴位
+// 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
     initDailyAcupoint();
     initDailyDiet();
+    initDailyFitness();
+    initDailyTea();
+    initDailyWine();
+    initDailyTide();
 });
+
+// ==================== 潮汐与水产数据 ====================
+const tideData = [
+    {
+        location: '山东青岛',
+        coords: '北纬36°04′ 东经120°23′',
+        region: '黄海',
+        tideType: '正规半日潮',
+        highTide1: '06:30',
+        lowTide1: '12:45',
+        highTide2: '18:50',
+        lowTide2: '01:05',
+        seafood: [
+            {
+                name: '大虾',
+                alias: '中国对虾、明虾',
+                icon: '🦐',
+                habitat: '黄海、渤海近海',
+                season: '4-6月、9-11月',
+                price: '80-150元/斤',
+                nutrition: '高蛋白、低脂肪，富含锌、硒',
+                cooking: ['白灼', '油焖', '椒盐', '蒜蓉蒸'],
+                desc: '青岛大虾肉质紧实鲜甜，是当地最具代表性的海鲜之一。'
+            },
+            {
+                name: '蛤蜊',
+                alias: '花蛤、杂色蛤',
+                icon: '🐚',
+                habitat: '青岛胶州湾',
+                season: '全年，春秋最肥',
+                price: '8-15元/斤',
+                nutrition: '高蛋白、富含铁、维生素B12',
+                cooking: ['辣炒', '蒜蓉蒸', '蛤蜊汤', '烤蛤蜊'],
+                desc: '胶州湾蛤蜊被誉为"天下第一鲜"，肉质饱满，鲜味浓郁。'
+            },
+            {
+                name: '海参',
+                alias: '刺参、辽参',
+                icon: '🥒',
+                habitat: '黄海北部深水区',
+                season: '11月-次年4月',
+                price: '200-800元/斤（鲜）',
+                nutrition: '高蛋白、低脂低糖，富含胶原蛋白',
+                cooking: ['葱烧', '小米粥', '凉拌', '红烧'],
+                desc: '北方刺参品质上乘，营养价值高，是滋补佳品。'
+            }
+        ],
+        tips: ['退潮时是赶海最佳时机', '注意查看潮汐表避免危险', '带好工具和防晒装备']
+    },
+    {
+        location: '浙江舟山',
+        coords: '北纬29°59′ 东经122°12′',
+        region: '东海',
+        tideType: '正规半日潮',
+        highTide1: '07:15',
+        lowTide1: '13:30',
+        highTide2: '19:35',
+        lowTide2: '01:50',
+        seafood: [
+            {
+                name: '带鱼',
+                alias: '刀鱼、白带鱼',
+                icon: '🐟',
+                habitat: '东海中下层',
+                season: '11月-次年2月',
+                price: '25-60元/斤',
+                nutrition: '富含DHA、EPA，高蛋白',
+                cooking: ['红烧', '清蒸', '干煎', '糖醋'],
+                desc: '舟山带鱼银光闪闪，肉质细嫩，刺少味鲜，是东海四大经济鱼类之首。'
+            },
+            {
+                name: '梭子蟹',
+                alias: '枪蟹、海蟹',
+                icon: '🦀',
+                habitat: '东海近海沙泥底',
+                season: '8-11月',
+                price: '40-120元/斤',
+                nutrition: '高蛋白、富含钙、磷',
+                cooking: ['清蒸', '葱姜炒', '蟹粉豆腐', '醉蟹'],
+                desc: '舟山梭子蟹膏满黄肥，肉质鲜美，是秋季最受欢迎的海鲜。'
+            },
+            {
+                name: '大黄鱼',
+                alias: '黄花鱼、黄瓜鱼',
+                icon: '🐠',
+                habitat: '东海近海',
+                season: '4-6月',
+                price: '野生500-2000元/斤',
+                nutrition: '富含蛋白质、微量元素',
+                cooking: ['清蒸', '红烧', '糖醋', '家烧'],
+                desc: '野生大黄鱼极为珍贵，肉质细嫩，是东海名贵鱼种。'
+            }
+        ],
+        tips: ['舟山海鲜以鲜为主，清蒸最佳', '购买时注意辨别野生和养殖', '海鲜过敏者慎食']
+    },
+    {
+        location: '广东湛江',
+        coords: '北纬21°16′ 东经110°21′',
+        region: '南海',
+        tideType: '不正规半日潮',
+        highTide1: '08:20',
+        lowTide1: '14:35',
+        highTide2: '20:40',
+        lowTide2: '02:55',
+        seafood: [
+            {
+                name: '生蚝',
+                alias: '牡蛎、蚝',
+                icon: '🦪',
+                habitat: '湛江近海养殖',
+                season: '10月-次年4月',
+                price: '5-15元/个',
+                nutrition: '富含锌、蛋白质、牛磺酸',
+                cooking: ['蒜蓉烤', '生吃', '蚝仔煎', '蚝油'],
+                desc: '湛江生蚝个大肉肥，奶香浓郁，被誉为"海中牛奶"。'
+            },
+            {
+                name: '白鲳鱼',
+                alias: '银鲳、镜鱼',
+                icon: '🐟',
+                habitat: '南海近海',
+                season: '5-10月',
+                price: '50-100元/斤',
+                nutrition: '高蛋白、富含不饱和脂肪酸',
+                cooking: ['清蒸', '红烧', '干煎', '豆豉蒸'],
+                desc: '白鲳鱼肉质细嫩，刺少味鲜，是南方餐桌上的常客。'
+            },
+            {
+                name: '花蟹',
+                alias: '远海梭子蟹',
+                icon: '🦀',
+                habitat: '南海沙泥底质海域',
+                season: '全年，秋冬最肥',
+                price: '60-150元/斤',
+                nutrition: '高蛋白、低脂肪',
+                cooking: ['清蒸', '避风塘炒', '姜葱炒', '蟹粥'],
+                desc: '花蟹壳薄肉多，蟹膏丰富，是粤式海鲜的代表。'
+            }
+        ],
+        tips: ['湛江海鲜讲究原汁原味', '生蚝建议选择正规养殖场', '夏季注意海鲜保鲜']
+    },
+    {
+        location: '福建厦门',
+        coords: '北纬24°27′ 东经118°04′',
+        region: '台湾海峡',
+        tideType: '正规半日潮',
+        highTide1: '07:45',
+        lowTide1: '14:00',
+        highTide2: '20:05',
+        lowTide2: '02:20',
+        seafood: [
+            {
+                name: '土笋冻',
+                alias: '沙虫冻',
+                icon: '🍮',
+                habitat: '厦门近海滩涂',
+                season: '全年',
+                price: '15-30元/份',
+                nutrition: '高蛋白、富含胶原蛋白',
+                cooking: ['冷食', '配酱油醋'],
+                desc: '厦门特色小吃，由沙虫熬制而成，Q弹爽口，是当地人的最爱。'
+            },
+            {
+                name: '章鱼',
+                alias: '八爪鱼、望潮',
+                icon: '🐙',
+                habitat: '闽南近海礁石区',
+                season: '4-9月',
+                price: '30-60元/斤',
+                nutrition: '高蛋白、低脂肪、富含牛磺酸',
+                cooking: ['白灼', '红烧', '椒盐', '烧烤'],
+                desc: '厦门章鱼肉质紧实有嚼劲，是闽南海鲜的代表之一。'
+            },
+            {
+                name: '红蟳',
+                alias: '青蟹、膏蟹',
+                icon: '🦀',
+                habitat: '闽南沿海',
+                season: '中秋前后',
+                price: '100-300元/斤',
+                nutrition: '高蛋白、富含钙、磷',
+                cooking: ['清蒸', '红蟳米糕', '姜母鸭配蟹'],
+                desc: '红蟳是闽南地区最名贵的螃蟹，膏肥肉美，是节庆佳品。'
+            }
+        ],
+        tips: ['厦门海鲜以清淡为主', '土笋冻是必尝特色', '八市是购买海鲜的好去处']
+    },
+    {
+        location: '辽宁大连',
+        coords: '北纬38°55′ 东经121°36′',
+        region: '黄海/渤海',
+        tideType: '正规半日潮',
+        highTide1: '06:15',
+        lowTide1: '12:30',
+        highTide2: '18:35',
+        lowTide2: '00:50',
+        seafood: [
+            {
+                name: '海胆',
+                alias: '刺锅子',
+                icon: '🌰',
+                habitat: '大连近海礁石区',
+                season: '6-8月',
+                price: '20-50元/个',
+                nutrition: '富含蛋白质、维生素A、卵磷脂',
+                cooking: ['刺身', '蒸蛋', '海胆饭', '烤海胆'],
+                desc: '大连海胆黄色饱满，入口即化，鲜甜无比，是海鲜中的极品。'
+            },
+            {
+                name: '扇贝',
+                alias: '海扇、干贝',
+                icon: '🐚',
+                habitat: '大连獐子岛海域',
+                season: '全年，冬季最肥',
+                price: '15-30元/斤',
+                nutrition: '高蛋白、富含锌、硒',
+                cooking: ['蒜蓉粉丝蒸', '烤扇贝', '扇贝粥'],
+                desc: '獐子岛扇贝品质上乘，贝柱饱满，是大连的招牌海鲜。'
+            },
+            {
+                name: '鲍鱼',
+                alias: '石决明',
+                icon: '🐚',
+                habitat: '大连长海县',
+                season: '7-9月',
+                price: '50-200元/只',
+                nutrition: '高蛋白、富含钙、铁',
+                cooking: ['清蒸', '红烧', '鲍鱼捞饭', '佛跳墙'],
+                desc: '大连鲍鱼肉质肥厚，口感弹牙，是北方鲍鱼的代表。'
+            }
+        ],
+        tips: ['大连海鲜以鲜活为主', '海胆要选黄满的', '购买时注意产地']
+    },
+    {
+        location: '海南三亚',
+        coords: '北纬18°15′ 东经109°30′',
+        region: '南海',
+        tideType: '不正规全日潮',
+        highTide1: '09:30',
+        lowTide1: '21:45',
+        highTide2: '-',
+        lowTide2: '-',
+        seafood: [
+            {
+                name: '和乐蟹',
+                alias: '青蟹',
+                icon: '🦀',
+                habitat: '海南万宁和乐镇',
+                season: '中秋前后',
+                price: '150-300元/斤',
+                nutrition: '高蛋白、富含微量元素',
+                cooking: ['清蒸', '姜葱炒', '蟹粥'],
+                desc: '和乐蟹是海南四大名菜之一，膏满肉肥，鲜美无比。'
+            },
+            {
+                name: '石斑鱼',
+                alias: '过鱼、鲙鱼',
+                icon: '🐟',
+                habitat: '南海珊瑚礁区',
+                season: '全年',
+                price: '80-300元/斤',
+                nutrition: '高蛋白、低脂肪、富含DHA',
+                cooking: ['清蒸', '红烧', '煲汤', '刺身'],
+                desc: '石斑鱼肉质细嫩，味道鲜美，是南海名贵鱼种。'
+            },
+            {
+                name: '龙虾',
+                alias: '大龙虾、锦绣龙虾',
+                icon: '🦞',
+                habitat: '南海深水区',
+                season: '全年',
+                price: '200-500元/斤',
+                nutrition: '高蛋白、富含锌、硒',
+                cooking: ['蒜蓉蒸', '芝士焗', '刺身', '龙虾粥'],
+                desc: '三亚龙虾个大肉多，是高档海鲜的代表，口感鲜甜弹牙。'
+            }
+        ],
+        tips: ['三亚海鲜建议去第一市场购买', '加工费另算，提前问清价格', '注意防止宰客']
+    },
+    {
+        location: '江苏连云港',
+        coords: '北纬34°36′ 东经119°13′',
+        region: '黄海',
+        tideType: '正规半日潮',
+        highTide1: '06:45',
+        lowTide1: '13:00',
+        highTide2: '19:05',
+        lowTide2: '01:20',
+        seafood: [
+            {
+                name: '梭子蟹',
+                alias: '海蟹、枪蟹',
+                icon: '🦀',
+                habitat: '黄海近海',
+                season: '8-11月',
+                price: '35-100元/斤',
+                nutrition: '高蛋白、富含钙',
+                cooking: ['清蒸', '香辣炒', '蟹黄包'],
+                desc: '连云港梭子蟹肉质饱满，蟹黄丰富，是秋季必尝美味。'
+            },
+            {
+                name: '对虾',
+                alias: '明虾、中国对虾',
+                icon: '🦐',
+                habitat: '黄海近海',
+                season: '4-6月、9-11月',
+                price: '60-120元/斤',
+                nutrition: '高蛋白、低脂肪',
+                cooking: ['白灼', '盐焗', '油焖', '干烧'],
+                desc: '连云港对虾肉质紧实，味道鲜甜，是当地特产。'
+            },
+            {
+                name: '紫菜',
+                alias: '条斑紫菜',
+                icon: '🌿',
+                habitat: '连云港沿海养殖',
+                season: '11月-次年3月',
+                price: '30-80元/斤（干）',
+                nutrition: '富含碘、蛋白质、维生素',
+                cooking: ['紫菜蛋花汤', '紫菜包饭', '凉拌'],
+                desc: '连云港是中国紫菜之乡，紫菜品质上乘，口感鲜嫩。'
+            }
+        ],
+        tips: ['连云港海鲜性价比高', '紫菜是当地特产值得购买', '赶海注意安全']
+    },
+    {
+        location: '广西北海',
+        coords: '北纬21°29′ 东经109°07′',
+        region: '北部湾',
+        tideType: '不正规全日潮',
+        highTide1: '10:15',
+        lowTide1: '22:30',
+        highTide2: '-',
+        lowTide2: '-',
+        seafood: [
+            {
+                name: '沙虫',
+                alias: '方格星虫',
+                icon: '🪱',
+                habitat: '北海银滩沙滩',
+                season: '全年，冬季最肥',
+                price: '80-150元/斤',
+                nutrition: '高蛋白、富含氨基酸',
+                cooking: ['白灼', '沙虫粥', '爆炒', '煲汤'],
+                desc: '北海沙虫被誉为"海洋虫草"，营养价值极高，口感爽脆。'
+            },
+            {
+                name: '珍珠贝',
+                alias: '马氏珠母贝',
+                icon: '🐚',
+                habitat: '北海涠洲岛海域',
+                season: '全年',
+                price: '20-40元/斤',
+                nutrition: '高蛋白、富含钙',
+                cooking: ['蒜蓉蒸', '烤贝', '贝肉粥'],
+                desc: '北海是中国南珠之乡，珍珠贝肉质鲜美，贝壳可产珍珠。'
+            },
+            {
+                name: '鱿鱼',
+                alias: '枪乌贼',
+                icon: '🦑',
+                habitat: '北部湾海域',
+                season: '全年',
+                price: '25-50元/斤',
+                nutrition: '高蛋白、富含牛磺酸',
+                cooking: ['铁板烧', '爆炒', '鱿鱼干', '烧烤'],
+                desc: '北海鱿鱼肉质厚实，口感弹牙，是烧烤的绝佳食材。'
+            }
+        ],
+        tips: ['北海老街有很多海鲜加工店', '沙虫是当地特色必尝', '涠洲岛海鲜更新鲜']
+    }
+];
+
+// 获取今日潮汐
+function getDailyTide() {
+    const today = new Date();
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    return tideData[dayOfYear % tideData.length];
+}
+
+// 初始化潮汐
+function initDailyTide() {
+    const tide = getDailyTide();
+    const today = new Date();
+    document.getElementById('tide-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
+    document.getElementById('tide-name').textContent = tide.location;
+    document.getElementById('tide-desc').textContent = `${tide.region} · 高潮${tide.highTide1}`;
+}
+
+// 显示潮汐详情
+function showDailyTide() {
+    const tide = getDailyTide();
+    const resultsDiv = document.getElementById('results');
+    
+    resultsDiv.innerHTML = `
+        <div class="result-header">
+            <h2>🌊 ${tide.location} · 潮汐与水产</h2>
+            <button class="back-btn" onclick="hideResults()">
+                <i class="fas fa-times"></i> 关闭
+            </button>
+        </div>
+        
+        <div class="tide-detail-card">
+            <div class="tide-info-box">
+                <div class="tide-location">📍 ${tide.location}</div>
+                <div class="tide-coords">${tide.coords} · ${tide.region}</div>
+                <div class="tide-times">
+                    <div class="tide-time-item">
+                        <div class="tide-time-label">第一次高潮</div>
+                        <div class="tide-time-value">🌊 ${tide.highTide1}</div>
+                    </div>
+                    <div class="tide-time-item">
+                        <div class="tide-time-label">第一次低潮</div>
+                        <div class="tide-time-value">🏖️ ${tide.lowTide1}</div>
+                    </div>
+                    ${tide.highTide2 !== '-' ? `
+                    <div class="tide-time-item">
+                        <div class="tide-time-label">第二次高潮</div>
+                        <div class="tide-time-value">🌊 ${tide.highTide2}</div>
+                    </div>
+                    <div class="tide-time-item">
+                        <div class="tide-time-label">第二次低潮</div>
+                        <div class="tide-time-value">🏖️ ${tide.lowTide2}</div>
+                    </div>
+                    ` : `
+                    <div class="tide-time-item" style="grid-column: span 2;">
+                        <div class="tide-time-label">潮汐类型</div>
+                        <div class="tide-time-value">${tide.tideType}</div>
+                    </div>
+                    `}
+                </div>
+            </div>
+            
+            <div class="tide-section">
+                <div class="section-title"><i class="fas fa-fish"></i> 当地特色水产</div>
+                <div class="seafood-grid">
+                    ${tide.seafood.map(s => `
+                        <div class="seafood-item">
+                            <div class="seafood-header">
+                                <span class="seafood-icon">${s.icon}</span>
+                                <div>
+                                    <div class="seafood-name">${s.name}</div>
+                                    <div class="seafood-alias">${s.alias}</div>
+                                </div>
+                            </div>
+                            <div class="seafood-info">
+                                <div class="seafood-info-item"><span class="label">产地：</span>${s.habitat}</div>
+                                <div class="seafood-info-item"><span class="label">营养：</span>${s.nutrition}</div>
+                                <div class="seafood-info-item"><span class="label">做法：</span>${s.cooking.join('、')}</div>
+                            </div>
+                            <div>
+                                <span class="seafood-season">🗓️ ${s.season}</span>
+                                <span class="seafood-price">💰 ${s.price}</span>
+                            </div>
+                            <div class="seafood-desc">${s.desc}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="tide-tip-box">
+                <div class="tide-tip-title">🎣 赶海小贴士</div>
+                <ul class="tide-tip-list">
+                    ${tide.tips.map(t => `<li>${t}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="notice">
+                <i class="fas fa-info-circle"></i> 
+                <strong>温馨提示：</strong>潮汐时间仅供参考，实际以当地海洋预报为准。赶海时注意安全，关注天气变化。
+            </div>
+        </div>
+    `;
+    
+    resultsDiv.classList.add('show');
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ==================== 运动健康数据 ====================
+const fitnessData = [
+    {
+        name: '颈椎康复操',
+        targetSymptoms: ['颈椎痛', '肩颈僵硬', '头痛'],
+        muscles: [
+            { name: '斜方肌', location: '颈部后侧至肩部', function: '控制头部后仰和肩胛骨运动' },
+            { name: '胸锁乳突肌', location: '颈部两侧', function: '控制头部转动和前屈' },
+            { name: '头夹肌', location: '颈后深层', function: '维持颈椎稳定' }
+        ],
+        exercises: [
+            { name: '颈部前后点头', sets: '3组', reps: '每组10次', tips: '动作缓慢，幅度适中' },
+            { name: '颈部左右转动', sets: '3组', reps: '每组10次', tips: '转到最大幅度停留3秒' },
+            { name: '颈部侧屈', sets: '3组', reps: '每组10次', tips: '耳朵尽量靠近肩膀' },
+            { name: '肩部环绕', sets: '2组', reps: '每组15次', tips: '前后各做一半' }
+        ],
+        duration: '15-20分钟',
+        frequency: '每日1-2次',
+        precautions: ['动作要慢，避免快速转动', '有眩晕感立即停止', '急性期不宜做'],
+        benefits: '缓解颈部肌肉紧张，改善颈椎活动度，预防颈椎病'
+    },
+    {
+        name: '腰背强化训练',
+        targetSymptoms: ['腰痛', '腰肌劳损', '久坐不适'],
+        muscles: [
+            { name: '竖脊肌', location: '脊柱两侧', function: '维持脊柱直立，控制躯干后伸' },
+            { name: '腰方肌', location: '腰部深层', function: '稳定腰椎，控制侧屈' },
+            { name: '多裂肌', location: '脊柱深层', function: '精细控制脊柱节段运动' },
+            { name: '腹横肌', location: '腹部深层', function: '核心稳定，保护腰椎' }
+        ],
+        exercises: [
+            { name: '猫牛式', sets: '3组', reps: '每组10次', tips: '配合呼吸，吸气抬头塌腰，呼气低头拱背' },
+            { name: '死虫式', sets: '3组', reps: '每组8次', tips: '保持腰部贴地，对侧手脚交替' },
+            { name: '臀桥', sets: '3组', reps: '每组12次', tips: '臀部发力，顶峰收紧臀肌' },
+            { name: '平板支撑', sets: '3组', reps: '每组30秒', tips: '身体成一条直线，不要塌腰' }
+        ],
+        duration: '20-30分钟',
+        frequency: '每周3-4次',
+        precautions: ['腰痛急性期避免训练', '动作标准比次数重要', '循序渐进增加难度'],
+        benefits: '强化核心肌群，保护腰椎，改善体态'
+    },
+    {
+        name: '肩周康复训练',
+        targetSymptoms: ['肩周炎', '肩膀疼痛', '手臂抬举困难'],
+        muscles: [
+            { name: '三角肌', location: '肩部表层', function: '控制手臂各方向抬举' },
+            { name: '冈上肌', location: '肩胛骨上方', function: '手臂外展起始动作' },
+            { name: '冈下肌', location: '肩胛骨后方', function: '手臂外旋' },
+            { name: '肩胛下肌', location: '肩胛骨前方', function: '手臂内旋' }
+        ],
+        exercises: [
+            { name: '钟摆运动', sets: '3组', reps: '每组20次', tips: '身体前倾，手臂自然下垂画圈' },
+            { name: '爬墙运动', sets: '3组', reps: '每组10次', tips: '手指沿墙向上爬，记录高度' },
+            { name: '毛巾拉伸', sets: '3组', reps: '每组10次', tips: '双手握毛巾，上下拉动' },
+            { name: '外旋训练', sets: '3组', reps: '每组12次', tips: '肘部贴身，小臂向外旋转' }
+        ],
+        duration: '15-20分钟',
+        frequency: '每日1-2次',
+        precautions: ['疼痛剧烈时减小幅度', '热敷后训练效果更好', '坚持才能见效'],
+        benefits: '恢复肩关节活动度，缓解粘连，减轻疼痛'
+    },
+    {
+        name: '膝关节保护训练',
+        targetSymptoms: ['膝盖疼痛', '上下楼困难', '关节僵硬'],
+        muscles: [
+            { name: '股四头肌', location: '大腿前侧', function: '伸直膝关节，稳定髌骨' },
+            { name: '腘绳肌', location: '大腿后侧', function: '屈曲膝关节' },
+            { name: '臀大肌', location: '臀部', function: '髋关节伸展，减轻膝盖负担' },
+            { name: '小腿三头肌', location: '小腿后侧', function: '踝关节跖屈，辅助膝关节稳定' }
+        ],
+        exercises: [
+            { name: '直腿抬高', sets: '3组', reps: '每组15次', tips: '膝盖伸直，抬高45度停留' },
+            { name: '靠墙静蹲', sets: '3组', reps: '每组30秒', tips: '膝盖不超过脚尖，大腿与地面平行' },
+            { name: '坐姿伸膝', sets: '3组', reps: '每组12次', tips: '可绑沙袋增加阻力' },
+            { name: '单腿平衡', sets: '3组', reps: '每组30秒', tips: '闭眼增加难度' }
+        ],
+        duration: '20-25分钟',
+        frequency: '每周4-5次',
+        precautions: ['避免深蹲和跳跃', '训练后可冰敷', '肥胖者先减重'],
+        benefits: '强化膝关节周围肌肉，提高稳定性，减轻磨损'
+    },
+    {
+        name: '改善失眠瑜伽',
+        targetSymptoms: ['失眠', '焦虑', '入睡困难'],
+        muscles: [
+            { name: '膈肌', location: '胸腔底部', function: '主要呼吸肌，深呼吸放松' },
+            { name: '腰大肌', location: '腰椎两侧', function: '连接上下半身，紧张影响睡眠' },
+            { name: '梨状肌', location: '臀部深层', function: '紧张可压迫坐骨神经' }
+        ],
+        exercises: [
+            { name: '婴儿式', sets: '1组', reps: '保持2分钟', tips: '额头贴地，双臂前伸或放身侧' },
+            { name: '仰卧扭转', sets: '2组', reps: '每侧1分钟', tips: '双肩贴地，膝盖倒向一侧' },
+            { name: '双腿靠墙', sets: '1组', reps: '保持5分钟', tips: '臀部靠墙，双腿垂直向上' },
+            { name: '尸躺式', sets: '1组', reps: '保持10分钟', tips: '全身放松，专注呼吸' }
+        ],
+        duration: '20-30分钟',
+        frequency: '每晚睡前',
+        precautions: ['在床上或瑜伽垫上进行', '配合腹式呼吸', '避免剧烈运动'],
+        benefits: '放松身心，调节自主神经，改善睡眠质量'
+    },
+    {
+        name: '缓解眼疲劳操',
+        targetSymptoms: ['眼疲劳', '干眼症', '视力模糊'],
+        muscles: [
+            { name: '眼外肌', location: '眼球周围', function: '控制眼球运动方向' },
+            { name: '睫状肌', location: '眼球内部', function: '调节晶状体，控制对焦' },
+            { name: '眼轮匝肌', location: '眼睑周围', function: '控制眨眼和闭眼' }
+        ],
+        exercises: [
+            { name: '眨眼练习', sets: '3组', reps: '每组20次', tips: '用力闭眼再睁开，促进泪液分泌' },
+            { name: '远近交替', sets: '3组', reps: '每组10次', tips: '看远处5秒，再看近处5秒' },
+            { name: '眼球转动', sets: '2组', reps: '顺逆各5圈', tips: '头不动，眼球画大圈' },
+            { name: '眼保健操', sets: '1组', reps: '完整一遍', tips: '按压眼周穴位' }
+        ],
+        duration: '5-10分钟',
+        frequency: '每小时1次',
+        precautions: ['每20分钟休息20秒看20英尺外', '保持屏幕适当亮度', '多眨眼'],
+        benefits: '缓解眼肌疲劳，促进眼部血液循环，保护视力'
+    },
+    {
+        name: '消化促进运动',
+        targetSymptoms: ['胃痛', '消化不良', '便秘'],
+        muscles: [
+            { name: '腹直肌', location: '腹部前侧', function: '躯干屈曲，辅助排便' },
+            { name: '腹斜肌', location: '腹部两侧', function: '躯干旋转，促进肠道蠕动' },
+            { name: '膈肌', location: '胸腔底部', function: '腹式呼吸按摩内脏' }
+        ],
+        exercises: [
+            { name: '腹式呼吸', sets: '3组', reps: '每组10次', tips: '吸气腹部隆起，呼气腹部收紧' },
+            { name: '仰卧抬腿', sets: '3组', reps: '每组15次', tips: '双腿伸直交替抬起' },
+            { name: '扭转式', sets: '2组', reps: '每侧30秒', tips: '坐姿扭转，按摩腹部器官' },
+            { name: '饭后散步', sets: '1组', reps: '15-20分钟', tips: '慢速行走，不要剧烈运动' }
+        ],
+        duration: '15-20分钟',
+        frequency: '每日1次',
+        precautions: ['饭后1小时再运动', '避免剧烈运动', '多喝水'],
+        benefits: '促进胃肠蠕动，改善消化功能，缓解便秘'
+    },
+    {
+        name: '心肺耐力训练',
+        targetSymptoms: ['疲劳', '气短', '体力下降'],
+        muscles: [
+            { name: '心肌', location: '心脏', function: '泵血供应全身' },
+            { name: '膈肌', location: '胸腔底部', function: '主要呼吸肌' },
+            { name: '肋间肌', location: '肋骨之间', function: '辅助呼吸' }
+        ],
+        exercises: [
+            { name: '快走', sets: '1组', reps: '30分钟', tips: '心率达到最大心率60-70%' },
+            { name: '开合跳', sets: '3组', reps: '每组30秒', tips: '组间休息30秒' },
+            { name: '高抬腿', sets: '3组', reps: '每组20次', tips: '膝盖抬至髋部高度' },
+            { name: '波比跳', sets: '3组', reps: '每组8次', tips: '初学者可省略跳跃' }
+        ],
+        duration: '30-45分钟',
+        frequency: '每周3-5次',
+        precautions: ['循序渐进增加强度', '心脏病患者需医生指导', '运动前热身'],
+        benefits: '增强心肺功能，提高耐力，改善精力'
+    }
+];
+
+// ==================== 茶道数据 ====================
+const teaData = [
+    {
+        name: '龙井茶',
+        type: '绿茶',
+        origin: '浙江杭州西湖',
+        appearance: '扁平光滑，色泽嫩绿，形如雀舌',
+        aroma: '清香持久，有豆花香',
+        taste: '鲜爽甘醇，回甘明显',
+        brewing: {
+            water: '80-85°C矿泉水或纯净水',
+            ratio: '1:50（3g茶叶配150ml水）',
+            vessel: '玻璃杯或白瓷盖碗',
+            time: '第一泡1分钟，后续递增30秒',
+            steps: [
+                '温杯：用热水温润茶具',
+                '投茶：将茶叶轻放入杯中',
+                '注水：沿杯壁缓缓注入80°C热水',
+                '观赏：欣赏茶叶舒展之美',
+                '品饮：待茶叶沉底后即可品尝'
+            ]
+        },
+        benefits: ['提神醒脑', '抗氧化', '降脂减肥', '清热解暑'],
+        bestTime: '上午9-11点',
+        taboo: ['空腹不宜', '睡前不宜', '胃寒者少饮'],
+        storage: '密封、避光、冷藏保存',
+        price: '特级500-2000元/斤，一级200-500元/斤'
+    },
+    {
+        name: '铁观音',
+        type: '乌龙茶',
+        origin: '福建安溪',
+        appearance: '卷曲紧结，色泽砂绿，重实匀整',
+        aroma: '兰花香浓郁，音韵明显',
+        taste: '醇厚甘鲜，七泡有余香',
+        brewing: {
+            water: '95-100°C沸水',
+            ratio: '1:20（7g茶叶配140ml水）',
+            vessel: '紫砂壶或盖碗',
+            time: '第一泡15秒，后续递增5秒',
+            steps: [
+                '温壶温杯：沸水烫洗茶具',
+                '投茶：茶叶投入壶中约1/3',
+                '洗茶：快速注水后立即倒出',
+                '冲泡：高冲低斟，激发香气',
+                '出汤：茶汤倒入公道杯分饮'
+            ]
+        },
+        benefits: ['消食去腻', '减肥健美', '抗衰老', '清热降火'],
+        bestTime: '饭后1小时',
+        taboo: ['空腹不宜', '贫血者少饮', '孕妇慎饮'],
+        storage: '密封、避光、冷藏或冷冻',
+        price: '清香型200-800元/斤，浓香型300-1500元/斤'
+    },
+    {
+        name: '普洱熟茶',
+        type: '黑茶',
+        origin: '云南西双版纳、普洱',
+        appearance: '条索肥壮，色泽红褐油润',
+        aroma: '陈香浓郁，有枣香或参香',
+        taste: '醇厚顺滑，回甘生津',
+        brewing: {
+            water: '100°C沸水',
+            ratio: '1:20（7g茶叶配140ml水）',
+            vessel: '紫砂壶最佳',
+            time: '第一泡10秒，后续递增5秒',
+            steps: [
+                '醒茶：提前将茶饼撬散醒茶',
+                '温壶：沸水烫洗紫砂壶',
+                '投茶洗茶：投茶后快速洗茶两遍',
+                '冲泡：沸水直冲，快速出汤',
+                '品饮：观汤色、闻香气、品滋味'
+            ]
+        },
+        benefits: ['暖胃护胃', '降脂减肥', '助消化', '安神助眠'],
+        bestTime: '饭后或晚间',
+        taboo: ['新茶少饮', '失眠者晚间少饮'],
+        storage: '通风、干燥、无异味处存放',
+        price: '普通100-300元/饼，老茶500-数万元/饼'
+    },
+    {
+        name: '正山小种',
+        type: '红茶',
+        origin: '福建武夷山桐木关',
+        appearance: '条索紧结，色泽乌润',
+        aroma: '松烟香或花果香',
+        taste: '醇厚甜润，桂圆汤味',
+        brewing: {
+            water: '90-95°C热水',
+            ratio: '1:50（3g茶叶配150ml水）',
+            vessel: '白瓷盖碗或玻璃杯',
+            time: '第一泡30秒，后续递增10秒',
+            steps: [
+                '温杯：热水温润茶具',
+                '投茶：将茶叶置入盖碗',
+                '注水：沿碗壁缓缓注水',
+                '闷泡：盖上碗盖闷泡',
+                '出汤：茶汤倒入品茗杯'
+            ]
+        },
+        benefits: ['暖胃养胃', '提神消疲', '利尿消肿', '抗菌消炎'],
+        bestTime: '下午茶时间',
+        taboo: ['发烧时不宜', '空腹不宜'],
+        storage: '密封、避光、阴凉处',
+        price: '正宗桐木关500-2000元/斤'
+    },
+    {
+        name: '白毫银针',
+        type: '白茶',
+        origin: '福建福鼎、政和',
+        appearance: '芽头肥壮，满披白毫，银白闪亮',
+        aroma: '毫香清鲜，有花香',
+        taste: '清甜醇爽，毫味足',
+        brewing: {
+            water: '85-90°C热水',
+            ratio: '1:50（3g茶叶配150ml水）',
+            vessel: '玻璃杯或白瓷盖碗',
+            time: '第一泡2分钟，后续递增30秒',
+            steps: [
+                '温杯：轻柔温润茶具',
+                '投茶：轻放茶叶，勿压碎',
+                '注水：水流细缓，沿杯壁注入',
+                '静置：让茶叶自然舒展',
+                '品饮：先闻香，再品味'
+            ]
+        },
+        benefits: ['清热降火', '美容养颜', '抗氧化', '护肝明目'],
+        bestTime: '午后或夏季',
+        taboo: ['脾胃虚寒者少饮', '经期女性少饮'],
+        storage: '密封、避光、干燥处，可长期存放',
+        price: '特级800-3000元/斤'
+    },
+    {
+        name: '大红袍',
+        type: '乌龙茶（岩茶）',
+        origin: '福建武夷山',
+        appearance: '条索紧结，色泽绿褐鲜润',
+        aroma: '岩骨花香，香气馥郁',
+        taste: '醇厚甘爽，岩韵明显',
+        brewing: {
+            water: '98-100°C沸水',
+            ratio: '1:15（8g茶叶配120ml水）',
+            vessel: '紫砂壶或盖碗',
+            time: '第一泡15秒，后续递增5秒',
+            steps: [
+                '高温烫壶：沸水烫洗茶具',
+                '投茶摇香：投茶后摇晃激发香气',
+                '悬壶高冲：高处注水激发茶性',
+                '刮沫淋盖：刮去浮沫，淋盖提温',
+                '关公巡城：均匀分茶入杯'
+            ]
+        },
+        benefits: ['提神醒脑', '消食去腻', '利尿消肿', '抗衰老'],
+        bestTime: '上午或饭后',
+        taboo: ['空腹不宜', '睡前不宜', '胃病者少饮'],
+        storage: '密封、避光、阴凉干燥处',
+        price: '正岩茶1000-5000元/斤，母树茶无价'
+    },
+    {
+        name: '碧螺春',
+        type: '绿茶',
+        origin: '江苏苏州太湖洞庭山',
+        appearance: '卷曲如螺，满身披毫，银绿隐翠',
+        aroma: '花果香浓郁，清香持久',
+        taste: '鲜爽生津，回味甘甜',
+        brewing: {
+            water: '75-80°C温水',
+            ratio: '1:50（3g茶叶配150ml水）',
+            vessel: '玻璃杯',
+            time: '第一泡1分钟，后续递增20秒',
+            steps: [
+                '温杯：温水轻润玻璃杯',
+                '注水：先注入七分水',
+                '投茶：将茶叶轻撒入水中',
+                '观赏：欣赏茶叶翻滚舒展',
+                '品饮：待茶叶沉底后品尝'
+            ]
+        },
+        benefits: ['提神益思', '利尿解毒', '抗菌消炎', '减肥瘦身'],
+        bestTime: '上午',
+        taboo: ['空腹不宜', '胃寒者少饮', '睡前不宜'],
+        storage: '密封、冷藏保存',
+        price: '特级1000-3000元/斤'
+    },
+    {
+        name: '祁门红茶',
+        type: '红茶',
+        origin: '安徽祁门',
+        appearance: '条索紧细，色泽乌润',
+        aroma: '祁门香独特，似花似果似蜜',
+        taste: '醇和鲜爽，回味隽永',
+        brewing: {
+            water: '90-95°C热水',
+            ratio: '1:50（3g茶叶配150ml水）',
+            vessel: '白瓷盖碗或茶壶',
+            time: '第一泡30秒，后续递增10秒',
+            steps: [
+                '温具：热水温润茶具',
+                '投茶：将茶叶置入盖碗',
+                '注水：沿碗壁缓缓注入',
+                '闷泡：盖上碗盖适当闷泡',
+                '品饮：可纯饮或加奶调饮'
+            ]
+        },
+        benefits: ['暖胃护胃', '提神消疲', '生津清热', '利尿'],
+        bestTime: '下午茶',
+        taboo: ['发烧时不宜', '结石患者少饮'],
+        storage: '密封、避光、阴凉处',
+        price: '特级300-1000元/斤'
+    }
+];
+
+// ==================== 酒道数据 ====================
+const wineData = [
+    {
+        name: '茅台酒',
+        type: '酱香型白酒',
+        origin: '贵州茅台镇',
+        alcohol: '53%vol',
+        appearance: '无色透明，微黄',
+        aroma: '酱香突出，幽雅细腻，空杯留香持久',
+        taste: '醇厚丰满，回味悠长，空杯隔夜香犹存',
+        price: '飞天茅台约1500-3000元/瓶，年份酒更高',
+        rating: '⭐⭐⭐⭐⭐',
+        drinking: {
+            temperature: '常温或微温（15-20°C）',
+            vessel: '小酒杯（15-20ml）',
+            method: '小口慢品，让酒液在口中停留',
+            pairing: ['酱香菜肴', '红烧肉', '卤味', '花生米']
+        },
+        history: '始于1951年，由三家烧房合并而成，国酒之称',
+        tips: ['真品瓶盖可旋转但不脱落', '酒体挂杯明显', '空杯留香可达24小时'],
+        healthNote: '适量饮用，每次不超过50ml'
+    },
+    {
+        name: '五粮液',
+        type: '浓香型白酒',
+        origin: '四川宜宾',
+        alcohol: '52%vol',
+        appearance: '无色透明，清亮',
+        aroma: '窖香浓郁，香气协调，陈香舒适',
+        taste: '绵甜甘冽，香味协调，余味净爽',
+        price: '普五约1000-1500元/瓶',
+        rating: '⭐⭐⭐⭐⭐',
+        drinking: {
+            temperature: '常温（18-22°C）',
+            vessel: '小酒杯',
+            method: '先闻香，再小口品尝',
+            pairing: ['川菜', '火锅', '烧烤', '凉菜']
+        },
+        history: '始于明代，由五种粮食酿造而成',
+        tips: ['五种粮食：高粱、大米、糯米、小麦、玉米', '酒体醇厚', '回味悠长'],
+        healthNote: '适量饮用，每次不超过50ml'
+    },
+    {
+        name: '汾酒',
+        type: '清香型白酒',
+        origin: '山西杏花村',
+        alcohol: '53%vol',
+        appearance: '无色透明，清亮如水',
+        aroma: '清香纯正，余香悠长',
+        taste: '绵软甘甜，清爽利口',
+        price: '青花汾酒约300-800元/瓶',
+        rating: '⭐⭐⭐⭐',
+        drinking: {
+            temperature: '常温或冰镇',
+            vessel: '小酒杯',
+            method: '可纯饮或加冰',
+            pairing: ['清淡菜肴', '海鲜', '凉菜', '面食']
+        },
+        history: '中国最古老的名酒之一，有4000年历史',
+        tips: ['清香型白酒代表', '适合初饮者', '口感清爽'],
+        healthNote: '适量饮用，每次不超过100ml'
+    },
+    {
+        name: '拉菲红酒',
+        type: '干红葡萄酒',
+        origin: '法国波尔多',
+        alcohol: '12.5-13.5%vol',
+        appearance: '深宝石红色，边缘泛紫',
+        aroma: '黑醋栗、雪松、烟熏、矿物质香气',
+        taste: '单宁细腻，结构优雅，余味悠长',
+        price: '大拉菲约5000-20000元/瓶，副牌约1500-3000元',
+        rating: '⭐⭐⭐⭐⭐',
+        drinking: {
+            temperature: '16-18°C',
+            vessel: '波尔多杯',
+            method: '开瓶后醒酒1-2小时',
+            pairing: ['牛排', '羊排', '奶酪', '黑巧克力']
+        },
+        history: '1855年波尔多分级一级庄，罗斯柴尔德家族所有',
+        tips: ['需要醒酒', '陈年潜力强', '适合收藏'],
+        healthNote: '每日不超过150ml'
+    },
+    {
+        name: '青岛啤酒',
+        type: '淡色拉格啤酒',
+        origin: '山东青岛',
+        alcohol: '4.3%vol',
+        appearance: '金黄色，泡沫洁白细腻',
+        aroma: '麦芽香与酒花香平衡',
+        taste: '清爽纯正，口感顺滑',
+        price: '经典约5-8元/瓶，奥古特约15-20元/瓶',
+        rating: '⭐⭐⭐⭐',
+        drinking: {
+            temperature: '8-10°C冰镇',
+            vessel: '啤酒杯',
+            method: '45度角倒入杯中',
+            pairing: ['海鲜', '烧烤', '炸鸡', '小龙虾']
+        },
+        history: '1903年德国人创建，中国最早的啤酒厂之一',
+        tips: ['冰镇后口感最佳', '倒酒留泡沫', '新鲜饮用'],
+        healthNote: '每日不超过500ml'
+    },
+    {
+        name: '獭祭清酒',
+        type: '纯米大吟酿',
+        origin: '日本山口县',
+        alcohol: '16%vol',
+        appearance: '清澈透明，微带淡黄',
+        aroma: '果香浓郁，有蜜瓜、梨的香气',
+        taste: '甘甜顺滑，余味清爽',
+        price: '二割三分约500-800元/瓶，三割九分约200-300元',
+        rating: '⭐⭐⭐⭐⭐',
+        drinking: {
+            temperature: '冷饮5-10°C或温饮40°C',
+            vessel: '清酒杯或葡萄酒杯',
+            method: '冷饮更能体现香气',
+            pairing: ['刺身', '寿司', '天妇罗', '清淡日料']
+        },
+        history: '旭酒造出品，以精米步合著称',
+        tips: ['二割三分精米步合23%', '开瓶后尽快饮用', '冷藏保存'],
+        healthNote: '每日不超过180ml'
+    },
+    {
+        name: '轩尼诗XO',
+        type: '干邑白兰地',
+        origin: '法国干邑地区',
+        alcohol: '40%vol',
+        appearance: '琥珀色，晶莹剔透',
+        aroma: '橡木、香草、干果、香料复合香气',
+        taste: '醇厚圆润，层次丰富，余味悠长',
+        price: '约1200-1800元/瓶',
+        rating: '⭐⭐⭐⭐⭐',
+        drinking: {
+            temperature: '常温（18-20°C）',
+            vessel: '白兰地杯（郁金香杯）',
+            method: '手心温杯，小口慢品',
+            pairing: ['雪茄', '黑巧克力', '奶酪', '坚果']
+        },
+        history: '1765年创立，XO级别陈酿至少10年',
+        tips: ['可加冰或加水', '手心温杯激发香气', '适合餐后饮用'],
+        healthNote: '每日不超过30ml'
+    },
+    {
+        name: '山崎单一麦芽威士忌',
+        type: '日本威士忌',
+        origin: '日本大阪',
+        alcohol: '43%vol',
+        appearance: '金黄琥珀色',
+        aroma: '花香、果香、橡木香层次分明',
+        taste: '柔和顺滑，有蜂蜜和香草味',
+        price: '12年约800-1500元/瓶，18年约3000-5000元',
+        rating: '⭐⭐⭐⭐⭐',
+        drinking: {
+            temperature: '常温或加冰',
+            vessel: '威士忌杯',
+            method: '可纯饮、加冰或加水',
+            pairing: ['日式料理', '烤肉', '坚果', '黑巧克力']
+        },
+        history: '三得利1923年创建，日本威士忌鼻祖',
+        tips: ['Highball喝法很流行', '加水可释放更多香气', '适合收藏'],
+        healthNote: '每日不超过50ml'
+    }
+];
+
+// 获取今日运动
+function getDailyFitness() {
+    const today = new Date();
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    return fitnessData[dayOfYear % fitnessData.length];
+}
+
+// 获取今日茶
+function getDailyTea() {
+    const today = new Date();
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    return teaData[dayOfYear % teaData.length];
+}
+
+// 获取今日酒
+function getDailyWine() {
+    const today = new Date();
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    return wineData[dayOfYear % wineData.length];
+}
+
+// 初始化运动健康
+function initDailyFitness() {
+    const fitness = getDailyFitness();
+    const today = new Date();
+    document.getElementById('fitness-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
+    document.getElementById('fitness-name').textContent = fitness.name;
+    document.getElementById('fitness-desc').textContent = `针对：${fitness.targetSymptoms.join('、')}`;
+}
+
+// 初始化茶道
+function initDailyTea() {
+    const tea = getDailyTea();
+    const today = new Date();
+    document.getElementById('tea-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
+    document.getElementById('tea-name').textContent = tea.name;
+    document.getElementById('tea-desc').textContent = `${tea.type} · ${tea.origin}`;
+}
+
+// 初始化酒道
+function initDailyWine() {
+    const wine = getDailyWine();
+    const today = new Date();
+    document.getElementById('wine-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
+    document.getElementById('wine-name').textContent = wine.name;
+    document.getElementById('wine-desc').textContent = `${wine.type} · ${wine.rating}`;
+}
+
+// 显示运动健康详情
+function showDailyFitness() {
+    const fitness = getDailyFitness();
+    const resultsDiv = document.getElementById('results');
+    
+    resultsDiv.innerHTML = `
+        <div class="result-header">
+            <h2>💪 ${fitness.name}</h2>
+            <button class="back-btn" onclick="hideResults()">
+                <i class="fas fa-times"></i> 关闭
+            </button>
+        </div>
+        
+        <div class="fitness-detail-card">
+            <div class="fitness-target-box">
+                <div class="target-title">🎯 适用症状</div>
+                <div class="target-symptoms">
+                    ${fitness.targetSymptoms.map(s => `<span class="symptom-tag">${s}</span>`).join('')}
+                </div>
+            </div>
+            
+            <div class="fitness-section">
+                <div class="section-title"><i class="fas fa-dumbbell"></i> 涉及肌肉</div>
+                <div class="muscle-list">
+                    ${fitness.muscles.map(m => `
+                        <div class="muscle-item">
+                            <div class="muscle-name">${m.name}</div>
+                            <div class="muscle-location">📍 ${m.location}</div>
+                            <div class="muscle-function">💡 ${m.function}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="fitness-section">
+                <div class="section-title"><i class="fas fa-list-ol"></i> 训练动作</div>
+                <div class="exercise-list">
+                    ${fitness.exercises.map((e, i) => `
+                        <div class="exercise-item">
+                            <div class="exercise-num">${i + 1}</div>
+                            <div class="exercise-content">
+                                <div class="exercise-name">${e.name}</div>
+                                <div class="exercise-detail">${e.sets} × ${e.reps}</div>
+                                <div class="exercise-tips">💡 ${e.tips}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="fitness-info">
+                <div class="info-item"><i class="fas fa-clock"></i> 时长：${fitness.duration}</div>
+                <div class="info-item"><i class="fas fa-calendar"></i> 频率：${fitness.frequency}</div>
+            </div>
+            
+            <div class="fitness-section">
+                <div class="section-title" style="color: #e74c3c;"><i class="fas fa-exclamation-triangle"></i> 注意事项</div>
+                <ul class="precaution-list">
+                    ${fitness.precautions.map(p => `<li>${p}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="notice">
+                <i class="fas fa-star"></i> <strong>训练效果：</strong>${fitness.benefits}
+            </div>
+        </div>
+    `;
+    
+    resultsDiv.classList.add('show');
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 显示茶道详情
+function showDailyTea() {
+    const tea = getDailyTea();
+    const resultsDiv = document.getElementById('results');
+    
+    resultsDiv.innerHTML = `
+        <div class="result-header">
+            <h2>🍵 ${tea.name}</h2>
+            <button class="back-btn" onclick="hideResults()">
+                <i class="fas fa-times"></i> 关闭
+            </button>
+        </div>
+        
+        <div class="tea-detail-card">
+            <div class="tea-info-box">
+                <div class="tea-type">${tea.type}</div>
+                <div class="tea-origin">📍 ${tea.origin}</div>
+            </div>
+            
+            <div class="tea-section">
+                <div class="section-title"><i class="fas fa-eye"></i> 外观</div>
+                <p>${tea.appearance}</p>
+            </div>
+            
+            <div class="tea-section">
+                <div class="section-title"><i class="fas fa-wind"></i> 香气</div>
+                <p>${tea.aroma}</p>
+            </div>
+            
+            <div class="tea-section">
+                <div class="section-title"><i class="fas fa-glass-whiskey"></i> 口感</div>
+                <p>${tea.taste}</p>
+            </div>
+            
+            <div class="tea-section brewing-section">
+                <div class="section-title"><i class="fas fa-mug-hot"></i> 冲泡方法</div>
+                <div class="brewing-info">
+                    <div class="brewing-item"><span class="label">水温：</span>${tea.brewing.water}</div>
+                    <div class="brewing-item"><span class="label">茶水比：</span>${tea.brewing.ratio}</div>
+                    <div class="brewing-item"><span class="label">茶具：</span>${tea.brewing.vessel}</div>
+                    <div class="brewing-item"><span class="label">时间：</span>${tea.brewing.time}</div>
+                </div>
+                <div class="brewing-steps">
+                    <div class="steps-title">冲泡步骤：</div>
+                    ${tea.brewing.steps.map((s, i) => `<div class="step-item"><span class="step-num">${i + 1}</span>${s}</div>`).join('')}
+                </div>
+            </div>
+            
+            <div class="tea-section">
+                <div class="section-title"><i class="fas fa-heart"></i> 功效</div>
+                <div class="benefits-grid">
+                    ${tea.benefits.map(b => `<span class="benefit-tag">${b}</span>`).join('')}
+                </div>
+            </div>
+            
+            <div class="tea-info-grid">
+                <div class="info-card">
+                    <div class="info-label">最佳时间</div>
+                    <div class="info-value">${tea.bestTime}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">参考价格</div>
+                    <div class="info-value">${tea.price}</div>
+                </div>
+            </div>
+            
+            <div class="tea-section">
+                <div class="section-title" style="color: #e74c3c;"><i class="fas fa-ban"></i> 饮用禁忌</div>
+                <ul class="taboo-list">
+                    ${tea.taboo.map(t => `<li>${t}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="notice">
+                <i class="fas fa-box"></i> <strong>存储方法：</strong>${tea.storage}
+            </div>
+        </div>
+    `;
+    
+    resultsDiv.classList.add('show');
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 显示酒道详情
+function showDailyWine() {
+    const wine = getDailyWine();
+    const resultsDiv = document.getElementById('results');
+    
+    resultsDiv.innerHTML = `
+        <div class="result-header">
+            <h2>🍷 ${wine.name}</h2>
+            <button class="back-btn" onclick="hideResults()">
+                <i class="fas fa-times"></i> 关闭
+            </button>
+        </div>
+        
+        <div class="wine-detail-card">
+            <div class="wine-info-box">
+                <div class="wine-type">${wine.type}</div>
+                <div class="wine-origin">📍 ${wine.origin}</div>
+                <div class="wine-rating">${wine.rating}</div>
+            </div>
+            
+            <div class="wine-specs">
+                <div class="spec-item"><span class="label">酒精度：</span>${wine.alcohol}</div>
+                <div class="spec-item"><span class="label">参考价格：</span>${wine.price}</div>
+            </div>
+            
+            <div class="wine-section">
+                <div class="section-title"><i class="fas fa-eye"></i> 外观</div>
+                <p>${wine.appearance}</p>
+            </div>
+            
+            <div class="wine-section">
+                <div class="section-title"><i class="fas fa-wind"></i> 香气</div>
+                <p>${wine.aroma}</p>
+            </div>
+            
+            <div class="wine-section">
+                <div class="section-title"><i class="fas fa-glass-whiskey"></i> 口感</div>
+                <p>${wine.taste}</p>
+            </div>
+            
+            <div class="wine-section drinking-section">
+                <div class="section-title"><i class="fas fa-wine-glass-alt"></i> 品饮方法</div>
+                <div class="drinking-info">
+                    <div class="drinking-item"><span class="label">温度：</span>${wine.drinking.temperature}</div>
+                    <div class="drinking-item"><span class="label">酒具：</span>${wine.drinking.vessel}</div>
+                    <div class="drinking-item"><span class="label">方法：</span>${wine.drinking.method}</div>
+                </div>
+                <div class="pairing-section">
+                    <div class="pairing-title">🍽️ 推荐搭配：</div>
+                    <div class="pairing-items">
+                        ${wine.drinking.pairing.map(p => `<span class="pairing-tag">${p}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="wine-section">
+                <div class="section-title"><i class="fas fa-history"></i> 历史背景</div>
+                <p>${wine.history}</p>
+            </div>
+            
+            <div class="wine-section">
+                <div class="section-title"><i class="fas fa-lightbulb"></i> 品鉴要点</div>
+                <ul class="tips-list">
+                    ${wine.tips.map(t => `<li>${t}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="notice" style="background: #fff3cd; border-left-color: #ffc107;">
+                <i class="fas fa-exclamation-circle" style="color: #856404;"></i> 
+                <strong style="color: #856404;">健康提示：</strong>
+                <span style="color: #856404;">${wine.healthNote}。未成年人禁止饮酒，酒后不开车。</span>
+            </div>
+        </div>
+    `;
+    
+    resultsDiv.classList.add('show');
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+}
 
 // ==================== 二十四节气饮食数据 ====================
 const solarTermsData = [

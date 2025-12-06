@@ -623,7 +623,27 @@
             box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
         }
         
-        .daily-acupoint:active, .daily-diet:active {
+        .daily-fitness {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+        
+        .daily-tea {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            box-shadow: 0 4px 15px rgba(86, 171, 47, 0.4);
+        }
+        
+        .daily-wine {
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+            box-shadow: 0 4px 15px rgba(195, 20, 50, 0.4);
+        }
+        
+        .daily-tide {
+            background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.4);
+        }
+        
+        .daily-acupoint:active, .daily-diet:active, .daily-fitness:active, .daily-tea:active, .daily-wine:active, .daily-tide:active {
             transform: scale(0.98);
         }
         
@@ -631,7 +651,7 @@
             .daily-cards {
                 flex-wrap: wrap;
             }
-            .daily-acupoint, .daily-diet {
+            .daily-acupoint, .daily-diet, .daily-fitness, .daily-tea, .daily-wine, .daily-tide {
                 min-width: calc(50% - 22px);
             }
         }
@@ -769,6 +789,498 @@
             margin-right: 8px;
             color: var(--primary);
         }
+        
+        /* 运动健康详情样式 */
+        .fitness-detail-card, .tea-detail-card, .wine-detail-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .fitness-target-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .target-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .target-symptoms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .symptom-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+        
+        .fitness-section, .tea-section, .wine-section {
+            margin-bottom: 16px;
+        }
+        
+        .muscle-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .muscle-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .muscle-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .muscle-location, .muscle-function {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .exercise-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .exercise-item {
+            display: flex;
+            gap: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+        }
+        
+        .exercise-num {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .exercise-content {
+            flex: 1;
+        }
+        
+        .exercise-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .exercise-detail {
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .exercise-tips {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .fitness-info {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #e8f5e9;
+            border-radius: 10px;
+        }
+        
+        .fitness-info .info-item {
+            font-size: 13px;
+            color: #2e7d32;
+        }
+        
+        .precaution-list, .taboo-list, .tips-list {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 13px;
+            color: var(--text);
+        }
+        
+        .precaution-list li, .taboo-list li, .tips-list li {
+            margin-bottom: 6px;
+        }
+        
+        /* 茶道详情样式 */
+        .tea-info-box {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .tea-type {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+        
+        .tea-origin {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .brewing-info {
+            background: #f1f8e9;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .brewing-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        
+        .brewing-item .label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .brewing-steps {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+        }
+        
+        .steps-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .step-num {
+            width: 20px;
+            height: 20px;
+            background: #56ab2f;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+        
+        .benefits-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .benefit-tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .tea-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .info-card {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        /* 酒道详情样式 */
+        .wine-info-box {
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .wine-type {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .wine-origin {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .wine-rating {
+            font-size: 18px;
+        }
+        
+        .wine-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .spec-item {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 12px;
+        }
+        
+        .spec-item .label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .drinking-info {
+            background: #fce4ec;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .drinking-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        
+        .drinking-item .label {
+            font-weight: 600;
+            color: #c2185b;
+        }
+        
+        .pairing-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+        }
+        
+        .pairing-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .pairing-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .pairing-tag {
+            background: #ffebee;
+            color: #c62828;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        /* 潮汐详情样式 */
+        .tide-detail-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .tide-info-box {
+            background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .tide-location {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .tide-coords {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 12px;
+        }
+        
+        .tide-times {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .tide-time-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .tide-time-label {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .tide-time-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .tide-section {
+            margin-bottom: 16px;
+        }
+        
+        .seafood-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .seafood-item {
+            background: #e3f2fd;
+            border-radius: 12px;
+            padding: 14px;
+            border-left: 4px solid #0077b6;
+        }
+        
+        .seafood-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .seafood-icon {
+            font-size: 28px;
+            margin-right: 10px;
+        }
+        
+        .seafood-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #01579b;
+        }
+        
+        .seafood-alias {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .seafood-info {
+            font-size: 13px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .seafood-info-item {
+            margin-bottom: 4px;
+        }
+        
+        .seafood-info-item .label {
+            font-weight: 600;
+            color: #0277bd;
+        }
+        
+        .seafood-season {
+            display: inline-block;
+            background: #0077b6;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-right: 6px;
+        }
+        
+        .seafood-price {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        .seafood-desc {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #90caf9;
+        }
+        
+        .tide-tip-box {
+            background: #e1f5fe;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .tide-tip-title {
+            font-weight: 600;
+            color: #01579b;
+            margin-bottom: 8px;
+        }
+        
+        .tide-tip-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+            color: var(--text);
+        }
+        
+        .tide-tip-list li {
+            margin-bottom: 4px;
+        }
     </style>
 </head>
 <body>
@@ -805,6 +1317,62 @@
                 <div class="daily-content">
                     <div class="daily-name" id="diet-principle">加载中...</div>
                     <div class="daily-desc" id="diet-foods"></div>
+                </div>
+                <div class="daily-tip">点击查看详情 →</div>
+            </div>
+            
+            <!-- 运动健康卡片 -->
+            <div class="daily-fitness" id="daily-fitness" onclick="showDailyFitness()">
+                <div class="daily-header">
+                    <span class="daily-icon">💪</span>
+                    <span class="daily-title">运动健康</span>
+                    <span class="daily-date" id="fitness-date"></span>
+                </div>
+                <div class="daily-content">
+                    <div class="daily-name" id="fitness-name">加载中...</div>
+                    <div class="daily-desc" id="fitness-desc"></div>
+                </div>
+                <div class="daily-tip">点击查看详情 →</div>
+            </div>
+            
+            <!-- 每日茶道卡片 -->
+            <div class="daily-tea" id="daily-tea" onclick="showDailyTea()">
+                <div class="daily-header">
+                    <span class="daily-icon">🍵</span>
+                    <span class="daily-title">每日茶道</span>
+                    <span class="daily-date" id="tea-date"></span>
+                </div>
+                <div class="daily-content">
+                    <div class="daily-name" id="tea-name">加载中...</div>
+                    <div class="daily-desc" id="tea-desc"></div>
+                </div>
+                <div class="daily-tip">点击查看详情 →</div>
+            </div>
+            
+            <!-- 每日酒道卡片 -->
+            <div class="daily-wine" id="daily-wine" onclick="showDailyWine()">
+                <div class="daily-header">
+                    <span class="daily-icon">🍷</span>
+                    <span class="daily-title">每日酒道</span>
+                    <span class="daily-date" id="wine-date"></span>
+                </div>
+                <div class="daily-content">
+                    <div class="daily-name" id="wine-name">加载中...</div>
+                    <div class="daily-desc" id="wine-desc"></div>
+                </div>
+                <div class="daily-tip">点击查看详情 →</div>
+            </div>
+            
+            <!-- 每日潮汐卡片 -->
+            <div class="daily-tide" id="daily-tide" onclick="showDailyTide()">
+                <div class="daily-header">
+                    <span class="daily-icon">🌊</span>
+                    <span class="daily-title">每日潮汐</span>
+                    <span class="daily-date" id="tide-date"></span>
+                </div>
+                <div class="daily-content">
+                    <div class="daily-name" id="tide-name">加载中...</div>
+                    <div class="daily-desc" id="tide-desc"></div>
                 </div>
                 <div class="daily-tip">点击查看详情 →</div>
             </div>
