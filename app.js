@@ -50,7 +50,142 @@ function getFoodIcon(food) {
     return '🌿'; // 默认图标
 }
 
-// 穴位示意图 SVG
+// 穴位图片配置 - 使用 Wikimedia Commons 公共领域图片
+const acupointImages = {
+    // 头面部穴位
+    '太阳穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Acupuncture_point_Taiyang.jpg/220px-Acupuncture_point_Taiyang.jpg',
+        fallback: '头部侧面',
+        desc: '眉梢与外眉角中间，向后约1寸凹陷处'
+    },
+    '风池穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Acupuncture_point_Fengchi_GB20.jpg/220px-Acupuncture_point_Fengchi_GB20.jpg',
+        fallback: '后颈部',
+        desc: '后颈部，枢骨之下，胸锁乳突肌与斜方肌上端之间的凹陷中'
+    },
+    '百会穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Acupuncture_point_Baihui_GV20.jpg/220px-Acupuncture_point_Baihui_GV20.jpg',
+        fallback: '头顶',
+        desc: '头顶正中线，两耳尖连线的中点'
+    },
+    '印堂穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Acupuncture_point_Yintang.jpg/220px-Acupuncture_point_Yintang.jpg',
+        fallback: '面部',
+        desc: '两眉头连线的中点'
+    },
+    // 手部穴位
+    '合谷穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Acupuncture_point_Hegu_LI4.jpg/220px-Acupuncture_point_Hegu_LI4.jpg',
+        fallback: '手背',
+        desc: '手背第1、2掌骨之间，第2掌骨桦侧中点（虎口处）'
+    },
+    '内关穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Acupuncture_point_Neiguan_PC6.jpg/220px-Acupuncture_point_Neiguan_PC6.jpg',
+        fallback: '前臂内侧',
+        desc: '腕横纹上2寸，掌长肌腱与桡侧腕屈肌腱之间'
+    },
+    '神门穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Acupuncture_point_Shenmen_HT7.jpg/220px-Acupuncture_point_Shenmen_HT7.jpg',
+        fallback: '手腕',
+        desc: '腕横纹尺侧，尺侧腕屈肌腱桡侧凹陷处'
+    },
+    '外关穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Acupuncture_point_Waiguan_TE5.jpg/220px-Acupuncture_point_Waiguan_TE5.jpg',
+        fallback: '前臂外侧',
+        desc: '腕背横纹上2寸，桡骨与尺骨之间'
+    },
+    // 足部穴位
+    '足三里': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Acupuncture_point_Zusanli_ST36.jpg/220px-Acupuncture_point_Zusanli_ST36.jpg',
+        fallback: '小腿外侧',
+        desc: '犢鼻下3寸，胫骨前缘一横指处'
+    },
+    '三阴交': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Acupuncture_point_Sanyinjiao_SP6.jpg/220px-Acupuncture_point_Sanyinjiao_SP6.jpg',
+        fallback: '小腿内侧',
+        desc: '内踝尖上3寸，胫骨内侧缘后方'
+    },
+    '涌泉穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Acupuncture_point_Yongquan_KI1.jpg/220px-Acupuncture_point_Yongquan_KI1.jpg',
+        fallback: '足底',
+        desc: '足底前1/3与后2/3交点凹陷处'
+    },
+    '太冲穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Acupuncture_point_Taichong_LR3.jpg/220px-Acupuncture_point_Taichong_LR3.jpg',
+        fallback: '足背',
+        desc: '足背第1、2趾骨结合部前方凹陷处'
+    },
+    // 腹部穴位
+    '中脘穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Acupuncture_point_Zhongwan_CV12.jpg/220px-Acupuncture_point_Zhongwan_CV12.jpg',
+        fallback: '上腹部',
+        desc: '前正中线上，脐上4寸'
+    },
+    '关元穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Acupuncture_point_Guanyuan_CV4.jpg/220px-Acupuncture_point_Guanyuan_CV4.jpg',
+        fallback: '下腹部',
+        desc: '前正中线上，脐下3寸'
+    },
+    '气海穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Acupuncture_point_Qihai_CV6.jpg/220px-Acupuncture_point_Qihai_CV6.jpg',
+        fallback: '下腹部',
+        desc: '前正中线上，脐下1.5寸'
+    },
+    // 背部穴位
+    '肾俞穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Acupuncture_point_Shenshu_BL23.jpg/220px-Acupuncture_point_Shenshu_BL23.jpg',
+        fallback: '腰部',
+        desc: '第2腰椎棘突下，旁开1.5寸'
+    },
+    '大椎穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Acupuncture_point_Dazhui_GV14.jpg/220px-Acupuncture_point_Dazhui_GV14.jpg',
+        fallback: '颈背部',
+        desc: '第7颈椎棘突下凹陷中'
+    },
+    // 颈肩部穴位
+    '肩井穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Acupuncture_point_Jianjing_GB21.jpg/220px-Acupuncture_point_Jianjing_GB21.jpg',
+        fallback: '肩部',
+        desc: '肩上，大椎与肩峰连线中点'
+    },
+    '天柱穴': {
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/t/t1/Acupuncture_point_Tianzhu_BL10.jpg/220px-Acupuncture_point_Tianzhu_BL10.jpg',
+        fallback: '后颈部',
+        desc: '后发际正中直上0.5寸，旁开1.3寸'
+    }
+};
+
+// 获取穴位图片 HTML
+function getAcupointImage(name) {
+    const config = acupointImages[name];
+    if (config && config.img) {
+        return `
+            <div class="acupoint-img-container">
+                <img src="${config.img}" 
+                     alt="${name}示意图" 
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                     loading="lazy">
+                <div class="acupoint-img-fallback" style="display:none;">
+                    <span class="fallback-icon">📍</span>
+                    <span>${config.fallback || '穴位图'}</span>
+                </div>
+                <div class="acupoint-img-desc">${config.desc}</div>
+            </div>
+        `;
+    }
+    // 默认图片
+    return `
+        <div class="acupoint-img-container">
+            <div class="acupoint-img-fallback">
+                <span class="fallback-icon">📍</span>
+                <span>穴位示意</span>
+            </div>
+            <div class="acupoint-img-desc">请参考上方文字描述定位</div>
+        </div>
+    `;
+}
+
+// 保留旧的 SVG 作为备用
 const acupointSVGs = {
     '太阳穴': `
         <svg viewBox="0 0 200 200" width="180" height="180">
@@ -60,23 +195,15 @@ const acupointSVGs = {
                     <stop offset="100%" style="stop-color:#FFDAB9"/>
                 </linearGradient>
             </defs>
-            <!-- 头部侧面 -->
             <ellipse cx="100" cy="100" rx="70" ry="85" fill="url(#skinGrad)" stroke="#DEB887" stroke-width="2"/>
-            <!-- 眉毛 -->
             <path d="M45 75 Q65 65 85 75" stroke="#4A3728" stroke-width="3" fill="none"/>
-            <!-- 眼睛 -->
             <ellipse cx="70" cy="90" rx="12" ry="8" fill="white" stroke="#4A3728" stroke-width="1"/>
             <circle cx="70" cy="90" r="5" fill="#4A3728"/>
-            <!-- 耳朵 -->
             <ellipse cx="165" cy="100" rx="15" ry="25" fill="url(#skinGrad)" stroke="#DEB887" stroke-width="2"/>
-            <!-- 太阳穴位置标记 -->
             <circle cx="130" cy="85" r="12" fill="#E74C3C" opacity="0.7">
                 <animate attributeName="r" values="10;14;10" dur="1.5s" repeatCount="indefinite"/>
-                <animate attributeName="opacity" values="0.7;0.4;0.7" dur="1.5s" repeatCount="indefinite"/>
             </circle>
             <circle cx="130" cy="85" r="5" fill="#C0392B"/>
-            <!-- 标注线 -->
-            <line x1="130" y1="85" x2="130" y2="45" stroke="#8B4513" stroke-width="1" stroke-dasharray="3,3"/>
             <text x="130" y="38" text-anchor="middle" font-size="12" fill="#8B4513">太阳穴</text>
         </svg>
     `,
@@ -88,13 +215,9 @@ const acupointSVGs = {
                     <stop offset="100%" style="stop-color:#FFDAB9"/>
                 </linearGradient>
             </defs>
-            <!-- 头部后面 -->
             <ellipse cx="100" cy="70" rx="60" ry="55" fill="url(#skinGrad2)" stroke="#DEB887" stroke-width="2"/>
-            <!-- 头发 -->
             <path d="M40 70 Q50 30 100 25 Q150 30 160 70" stroke="#4A3728" stroke-width="2" fill="#5D4037" opacity="0.7"/>
-            <!-- 脖子 -->
             <rect x="70" y="120" width="60" height="60" rx="10" fill="url(#skinGrad2)" stroke="#DEB887" stroke-width="2"/>
-            <!-- 风池穴位置标记 (左右两个) -->
             <circle cx="65" cy="130" r="10" fill="#E74C3C" opacity="0.7">
                 <animate attributeName="r" values="8;12;8" dur="1.5s" repeatCount="indefinite"/>
             </circle>
@@ -546,8 +669,7 @@ function renderAcupointCard(acupoint, category = '') {
             
             <!-- 穴位示意图 -->
             <div class="acupoint-image">
-                ${getAcupointSVG(acupoint.name)}
-                <div class="image-caption">红点为穴位位置，点击查看详情</div>
+                ${getAcupointImage(acupoint.name)}
             </div>
             
             <div class="acupoint-section">
