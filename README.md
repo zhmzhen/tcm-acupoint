@@ -1,4 +1,4 @@
-# 中医穴位养生 H5
+# 中医穴位养生 H5 (Traditional Chinese Medicine)
 
 一款移动端友好的中医穴位查询应用，帮助你在身体不适时快速找到对应穴位和调理方法。
 
@@ -48,6 +48,36 @@ git commit -m "中医穴位养生 H5"
 git remote add origin https://github.com/你的用户名/tcm-acupoint.git
 git push -u origin main
 ```
+
+## 使用 Docker + Nginx Basic Auth 部署
+
+如果需要通过权限控制来访问本项目，可以使用 Nginx 的 `auth_basic` 功能。仓库已包含示例配置与 Docker 构建文件。
+
+### 1. 生成账号密码
+
+```bash
+sudo apt-get install apache2-utils          # 首次安装
+mkdir -p auth
+htpasswd -c auth/.htpasswd demo             # 创建 demo 用户
+htpasswd     auth/.htpasswd alice           # 再添加一个用户
+```
+
+> 注意：仓库中的 `auth/.htpasswd` 仅为占位示例，请务必替换为自己的账号密码。
+> `.htpasswd` 每行格式为 `用户名:加密后的密码`，不支持添加注释；如需记录说明，请在 README 或单独文档中维护。
+
+### 2. 构建 Docker 镜像
+
+```bash
+docker build -t tcm-acupoint .
+```
+
+### 3. 运行容器
+
+```bash
+docker run --rm -p 8080:80 tcm-acupoint
+```
+
+访问 `http://localhost:8080`，浏览器会提示输入用户名和密码，认证成功后即可访问 H5 应用。
 
 ## 手机访问
 
