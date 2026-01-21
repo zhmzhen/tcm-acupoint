@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>潮汐水产 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .tide-hero {
+            background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+            color: white;
+            padding: 24px 16px;
+        }
+        
+        .tide-location {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .tide-coords {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 16px;
+        }
+        
+        .tide-times {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .tide-time-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .tide-time-label {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .tide-time-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .city-selector {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .selector-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .city-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .city-tag {
+            padding: 6px 12px;
+            background: #e3f2fd;
+            color: #0277bd;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .city-tag:hover {
+            background: #bbdefb;
+        }
+        
+        .city-tag.active {
+            background: #0077b6;
+            color: white;
+        }
+        
+        .seafood-item {
+            background: #e3f2fd;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-left: 4px solid #0077b6;
+        }
+        
+        .seafood-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .seafood-icon {
+            font-size: 32px;
+            margin-right: 12px;
+        }
+        
+        .seafood-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #01579b;
+        }
+        
+        .seafood-alias {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .seafood-info {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        
+        .seafood-info-item {
+            margin-bottom: 6px;
+        }
+        
+        .seafood-info-item .label {
+            font-weight: 600;
+            color: #0277bd;
+        }
+        
+        .seafood-tags {
+            margin-bottom: 10px;
+        }
+        
+        .seafood-season {
+            display: inline-block;
+            background: #0077b6;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-right: 6px;
+        }
+        
+        .seafood-price {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        .seafood-desc {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px dashed #90caf9;
+        }
+        
+        .tips-box {
+            background: #e1f5fe;
+            border-radius: 12px;
+            padding: 14px;
+        }
+        
+        .tips-title {
+            font-weight: 600;
+            color: #01579b;
+            margin-bottom: 10px;
+        }
+        
+        .tips-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 6px;
+        }
+        
+        .location-status {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>🌊 潮汐水产</h1>
+        </div>
+        <p id="date-display"></p>
+    </div>
+    
+    <div class="city-selector">
+        <div class="selector-label">📍 选择城市（自动定位中...）</div>
+        <div class="city-tags" id="city-tags"></div>
+    </div>
+    
+    <div id="tide-content"></div>
+    
+    <div class="container">
+        <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>温馨提示：</strong>潮汐时间仅供参考，实际以当地海洋预报为准。赶海时注意安全。
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/tide-data.js"></script>
+    <script>
+        let currentCityIndex = 0;
+        
+        function init() {
+            document.getElementById('date-display').textContent = getTodayString();
+            renderCityTags();
+            renderTide();
+            
+            // 尝试自动定位
+            getUserLocation(
+                (lat, lng) => {
+                    currentCityIndex = findNearestCity(lat, lng);
+                    renderCityTags();
+                    renderTide();
+                    document.querySelector('.selector-label').textContent = '📍 已定位到最近城市';
+                },
+                () => {
+                    document.querySelector('.selector-label').textContent = '📍 选择城市（定位失败，请手动选择）';
+                }
+            );
+        }
+        
+        function findNearestCity(userLat, userLng) {
+            let minDistance = Infinity;
+            let nearestIndex = 0;
+            
+            tideData.forEach((city, i) => {
+                const distance = calculateDistance(userLat, userLng, city.lat, city.lng);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestIndex = i;
+                }
+            });
+            
+            return nearestIndex;
+        }
+        
+        function renderCityTags() {
+            const container = document.getElementById('city-tags');
+            container.innerHTML = tideData.map((city, i) => `
+                <span class="city-tag ${i === currentCityIndex ? 'active' : ''}" onclick="switchCity(${i})">${city.location.replace(/^.+?省|^.+?市/, '')}</span>
+            `).join('');
+        }
+        
+        function switchCity(index) {
+            currentCityIndex = index;
+            renderCityTags();
+            renderTide();
+        }
+        
+        function renderTide() {
+            const tide = tideData[currentCityIndex];
+            const container = document.getElementById('tide-content');
+            
+            const tideTimesHtml = tide.highTide2 !== '-' ? `
+                <div class="tide-time-item">
+                    <div class="tide-time-label">第一次高潮</div>
+                    <div class="tide-time-value">🌊 ${tide.highTide1}</div>
+                </div>
+                <div class="tide-time-item">
+                    <div class="tide-time-label">第一次低潮</div>
+                    <div class="tide-time-value">🏖️ ${tide.lowTide1}</div>
+                </div>
+                <div class="tide-time-item">
+                    <div class="tide-time-label">第二次高潮</div>
+                    <div class="tide-time-value">🌊 ${tide.highTide2}</div>
+                </div>
+                <div class="tide-time-item">
+                    <div class="tide-time-label">第二次低潮</div>
+                    <div class="tide-time-value">🏖️ ${tide.lowTide2}</div>
+                </div>
+            ` : `
+                <div class="tide-time-item">
+                    <div class="tide-time-label">高潮时间</div>
+                    <div class="tide-time-value">🌊 ${tide.highTide1}</div>
+                </div>
+                <div class="tide-time-item">
+                    <div class="tide-time-label">低潮时间</div>
+                    <div class="tide-time-value">🏖️ ${tide.lowTide1}</div>
+                </div>
+                <div class="tide-time-item" style="grid-column: span 2;">
+                    <div class="tide-time-label">潮汐类型</div>
+                    <div class="tide-time-value">${tide.tideType}</div>
+                </div>
+            `;
+            
+            container.innerHTML = `
+                <div class="tide-hero">
+                    <div class="tide-location">📍 ${tide.location}</div>
+                    <div class="tide-coords">${tide.coords} · ${tide.region}</div>
+                    <div class="tide-times">${tideTimesHtml}</div>
+                </div>
+                
+                <div class="container">
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-fish"></i> 当地特色水产</div>
+                        ${tide.seafood.map(s => `
+                            <div class="seafood-item">
+                                <div class="seafood-header">
+                                    <span class="seafood-icon">${s.icon}</span>
+                                    <div>
+                                        <div class="seafood-name">${s.name}</div>
+                                        <div class="seafood-alias">${s.alias}</div>
+                                    </div>
+                                </div>
+                                <div class="seafood-info">
+                                    <div class="seafood-info-item"><span class="label">产地：</span>${s.habitat}</div>
+                                    <div class="seafood-info-item"><span class="label">营养：</span>${s.nutrition}</div>
+                                    <div class="seafood-info-item"><span class="label">做法：</span>${s.cooking.join('、')}</div>
+                                </div>
+                                <div class="seafood-tags">
+                                    <span class="seafood-season">🗓️ ${s.season}</span>
+                                    <span class="seafood-price">💰 ${s.price}</span>
+                                </div>
+                                <div class="seafood-desc">${s.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="card">
+                        <div class="tips-box">
+                            <div class="tips-title">🎣 赶海小贴士</div>
+                            <ul class="tips-list">
+                                ${tide.tips.map(t => `<li>${t}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        onReady(init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>每日茶道 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .tea-hero {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            color: white;
+            padding: 24px 16px;
+            text-align: center;
+        }
+        
+        .tea-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .tea-type {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+        
+        .tea-origin {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .tea-section {
+            margin-bottom: 16px;
+        }
+        
+        .appearance-box {
+            background: #f1f8e9;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .appearance-item {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .appearance-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .appearance-item .label {
+            font-weight: 600;
+            color: #33691e;
+        }
+        
+        .brewing-card {
+            background: #fff;
+            border: 1px solid #c5e1a5;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .brewing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .brewing-item {
+            background: #f1f8e9;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .brewing-label {
+            font-size: 11px;
+            color: #689f38;
+            margin-bottom: 4px;
+        }
+        
+        .brewing-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #33691e;
+        }
+        
+        .steps-list {
+            counter-reset: step;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        
+        .step-num {
+            width: 22px;
+            height: 22px;
+            background: #56ab2f;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .benefits-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .benefit-tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .taboo-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+            color: #c62828;
+        }
+        
+        .taboo-list li {
+            margin-bottom: 4px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-row .label {
+            color: var(--text-light);
+        }
+        
+        .info-row .value {
+            font-weight: 500;
+        }
+        
+        .tea-selector {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .selector-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .tea-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tea-tag {
+            padding: 6px 12px;
+            background: #f1f8e9;
+            color: #33691e;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tea-tag:hover {
+            background: #c5e1a5;
+        }
+        
+        .tea-tag.active {
+            background: #56ab2f;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>🍵 每日茶道</h1>
+        </div>
+        <p id="date-display"></p>
+    </div>
+    
+    <div class="tea-selector">
+        <div class="selector-label">选择茶品：</div>
+        <div class="tea-tags" id="tea-tags"></div>
+    </div>
+    
+    <div id="tea-content"></div>
+    
+    <div class="container">
+        <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>温馨提示：</strong>饮茶因人而异，请根据自身体质选择适合的茶品。
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/tea-data.js"></script>
+    <script>
+        let currentTeaIndex = 0;
+        
+        function init() {
+            document.getElementById('date-display').textContent = getTodayString();
+            currentTeaIndex = getDayOfYear() % teaData.length;
+            renderTeaTags();
+            renderTea();
+        }
+        
+        function renderTeaTags() {
+            const container = document.getElementById('tea-tags');
+            container.innerHTML = teaData.map((tea, i) => `
+                <span class="tea-tag ${i === currentTeaIndex ? 'active' : ''}" onclick="switchTea(${i})">${tea.name}</span>
+            `).join('');
+        }
+        
+        function switchTea(index) {
+            currentTeaIndex = index;
+            renderTeaTags();
+            renderTea();
+        }
+        
+        function renderTea() {
+            const tea = teaData[currentTeaIndex];
+            const container = document.getElementById('tea-content');
+            
+            container.innerHTML = `
+                <div class="tea-hero">
+                    <div class="tea-name">${tea.name}</div>
+                    <div class="tea-type">${tea.type}</div>
+                    <div class="tea-origin">📍 ${tea.origin}</div>
+                </div>
+                
+                <div class="container">
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-eye"></i> 茶品特征</div>
+                        <div class="appearance-box">
+                            <div class="appearance-item"><span class="label">外观：</span>${tea.appearance}</div>
+                            <div class="appearance-item"><span class="label">香气：</span>${tea.aroma}</div>
+                            <div class="appearance-item"><span class="label">口感：</span>${tea.taste}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-mug-hot"></i> 冲泡方法</div>
+                        <div class="brewing-grid">
+                            <div class="brewing-item">
+                                <div class="brewing-label">水温</div>
+                                <div class="brewing-value">${tea.brewing.temperature}</div>
+                            </div>
+                            <div class="brewing-item">
+                                <div class="brewing-label">茶水比</div>
+                                <div class="brewing-value">${tea.brewing.ratio}</div>
+                            </div>
+                            <div class="brewing-item">
+                                <div class="brewing-label">浸泡时间</div>
+                                <div class="brewing-value">${tea.brewing.time}</div>
+                            </div>
+                            <div class="brewing-item">
+                                <div class="brewing-label">可泡次数</div>
+                                <div class="brewing-value">${tea.brewing.times}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="brewing-card">
+                            <div style="font-weight: 600; margin-bottom: 10px;">冲泡步骤</div>
+                            <div class="steps-list">
+                                ${tea.steps.map((step, i) => `
+                                    <div class="step-item">
+                                        <span class="step-num">${i + 1}</span>
+                                        <span>${step}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-heart"></i> 养生功效</div>
+                        <div class="benefits-grid">
+                            ${tea.benefits.map(b => `<span class="benefit-tag">✓ ${b}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-exclamation-triangle"></i> 饮用禁忌</div>
+                        <ul class="taboo-list">
+                            ${tea.taboo.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-info-circle"></i> 其他信息</div>
+                        <div class="info-row">
+                            <span class="label">储存方式</span>
+                            <span class="value">${tea.storage}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">参考价格</span>
+                            <span class="value">${tea.price}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        onReady(init);
+    </script>
+</body>
+</html>

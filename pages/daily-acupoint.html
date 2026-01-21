@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>每日穴位 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .acupoint-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 16px;
+            text-align: center;
+        }
+        
+        .acupoint-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .acupoint-pinyin {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .acupoint-meridian {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        .progress-bar {
+            margin-top: 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+        
+        .progress-track {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        
+        .acupoint-selector {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .selector-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .acupoint-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        
+        .acupoint-tag {
+            padding: 5px 10px;
+            background: #ede7f6;
+            color: #5e35b1;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .acupoint-tag:hover {
+            background: #d1c4e9;
+        }
+        
+        .acupoint-tag.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .acupoint-tag.learned {
+            position: relative;
+        }
+        
+        .acupoint-tag.learned::after {
+            content: '✓';
+            margin-left: 4px;
+            font-size: 10px;
+        }
+        
+        .location-box {
+            background: #ede7f6;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .location-title {
+            font-weight: 600;
+            color: #5e35b1;
+            margin-bottom: 8px;
+        }
+        
+        .location-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .body-part-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .effects-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .effect-tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        .learn-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        .learn-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .learn-btn.learned {
+            background: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>📖 每日穴位</h1>
+        </div>
+        <p id="date-display"></p>
+    </div>
+    
+    <div class="acupoint-selector">
+        <div class="selector-label">选择穴位（已学习的带 ✓）：</div>
+        <div class="acupoint-tags" id="acupoint-tags"></div>
+    </div>
+    
+    <div id="acupoint-content"></div>
+    
+    <div class="container">
+        <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>温馨提示：</strong>穴位按摩仅作保健参考，如有疾病请及时就医。
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/acupoint-data.js"></script>
+    <script>
+        let currentAcupointIndex = 0;
+        let learnedAcupoints = [];
+        
+        function init() {
+            document.getElementById('date-display').textContent = getTodayString();
+            
+            // 加载已学习的穴位
+            learnedAcupoints = storage.get('tcm_learned', []);
+            
+            // 今日穴位
+            currentAcupointIndex = getDayOfYear() % dailyAcupointList.length;
+            
+            renderAcupointTags();
+            renderAcupoint();
+        }
+        
+        function renderAcupointTags() {
+            const container = document.getElementById('acupoint-tags');
+            container.innerHTML = dailyAcupointList.map((ap, i) => {
+                const isLearned = learnedAcupoints.includes(ap.name);
+                const isActive = i === currentAcupointIndex;
+                return `<span class="acupoint-tag ${isActive ? 'active' : ''} ${isLearned ? 'learned' : ''}" onclick="switchAcupoint(${i})">${ap.name}</span>`;
+            }).join('');
+        }
+        
+        function switchAcupoint(index) {
+            currentAcupointIndex = index;
+            renderAcupointTags();
+            renderAcupoint();
+        }
+        
+        function markAsLearned() {
+            const acupoint = dailyAcupointList[currentAcupointIndex];
+            if (!learnedAcupoints.includes(acupoint.name)) {
+                learnedAcupoints.push(acupoint.name);
+                storage.set('tcm_learned', learnedAcupoints);
+                renderAcupointTags();
+                renderAcupoint();
+            }
+        }
+        
+        function renderAcupoint() {
+            const acupoint = dailyAcupointList[currentAcupointIndex];
+            const container = document.getElementById('acupoint-content');
+            const isLearned = learnedAcupoints.includes(acupoint.name);
+            const progress = Math.round((learnedAcupoints.length / dailyAcupointList.length) * 100);
+            
+            container.innerHTML = `
+                <div class="acupoint-hero">
+                    <div class="acupoint-name">${acupoint.name}</div>
+                    <div class="acupoint-pinyin">${acupoint.pinyin}</div>
+                    <div class="acupoint-meridian">📍 ${acupoint.meridian}</div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-text">学习进度：${learnedAcupoints.length}/${dailyAcupointList.length} 个穴位</div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-map-marker-alt"></i> 穴位定位</div>
+                        <div class="location-box">
+                            <div class="location-text">${acupoint.location}</div>
+                            <span class="body-part-tag">📍 ${acupoint.bodyPart}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-star"></i> 主治功效</div>
+                        <div class="effects-grid">
+                            ${acupoint.effects.map(e => `<span class="effect-tag">✓ ${e}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <button class="learn-btn ${isLearned ? 'learned' : ''}" onclick="markAsLearned()" ${isLearned ? 'disabled' : ''}>
+                            ${isLearned ? '✓ 已学习' : '📚 标记为已学习'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        onReady(init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>节气饮食 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .diet-hero {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 24px 16px;
+            text-align: center;
+        }
+        
+        .diet-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .diet-date {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .diet-principle {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .term-selector {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .selector-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .term-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .term-tag {
+            padding: 5px 10px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .term-tag:hover {
+            background: #c8e6c9;
+        }
+        
+        .term-tag.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .food-item {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+        
+        .food-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .food-name {
+            font-size: 12px;
+            color: #2e7d32;
+        }
+        
+        .avoid-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .avoid-tag {
+            background: #ffebee;
+            color: #c62828;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .soup-box {
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .soup-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+        
+        .soup-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f57f17;
+        }
+        
+        .soup-label {
+            font-size: 12px;
+            color: #f9a825;
+            margin-top: 4px;
+        }
+        
+        .desc-box {
+            background: #f5f5f5;
+            border-left: 3px solid #11998e;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+        
+        .season-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .season-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .season-dot.spring { background: #4caf50; }
+        .season-dot.summer { background: #ff9800; }
+        .season-dot.autumn { background: #ff5722; }
+        .season-dot.winter { background: #2196f3; }
+        .season-dot.active { box-shadow: 0 0 0 3px rgba(255,255,255,0.5); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>🥗 节气饮食</h1>
+        </div>
+        <p id="date-display"></p>
+    </div>
+    
+    <div class="term-selector">
+        <div class="selector-label">选择节气（当前已高亮）：</div>
+        <div class="term-tags" id="term-tags"></div>
+    </div>
+    
+    <div id="diet-content"></div>
+    
+    <div class="container">
+        <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>温馨提示：</strong>饮食建议仅供参考，请根据个人体质和健康状况调整。
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/diet-data.js"></script>
+    <script>
+        let currentTermIndex = 0;
+        
+        const foodIcons = {
+            '韭菜': '🥬', '豆芽': '🌱', '香椿': '🌿', '菠菜': '🥬',
+            '山药': '🥔', '薏米': '🌾', '红枣': '🫘', '莲子': '🫘',
+            '梨': '🍐', '荠菜': '🥬', '芹菜': '🥬', '菊花': '🌼',
+            '春笋': '🎋', '豌豆': '🫛', '银耳': '🍄', '百合': '🌸',
+            '冬瓜': '🥒', '赤小豆': '🫘', '鲫鱼': '🐟', '扁豆': '🫘',
+            '苦瓜': '🥒', '绿豆': '🫘', '西瓜': '🍉', '黄瓜': '🥒',
+            '西红柿': '🍅', '丝瓜': '🥒', '荷叶': '🍃', '薄荷': '🌿',
+            '莲藕': '🥔', '芝麻': '🫘', '核桃': '🥜', '蜂蜜': '🍯',
+            '糯米': '🍚', '乳品': '🥛', '柿子': '🍊', '栗子': '🌰',
+            '萝卜': '🥕', '羊肉': '🍖', '牛肉': '🥩', '鸡肉': '🍗',
+            '狗肉': '🍖', '鹿肉': '🍖', '饺子': '🥟', '汤圆': '🍡',
+            '生姜': '🫚', '大枣': '🫘', '桂圆': '🫘', '葡萄': '🍇',
+            '枸杞': '🫘', '当归': '🌿'
+        };
+        
+        function init() {
+            document.getElementById('date-display').textContent = getTodayString();
+            
+            // 找到当前节气
+            const currentTerm = getCurrentSolarTerm();
+            currentTermIndex = dietData.findIndex(d => d.name === currentTerm.name);
+            if (currentTermIndex === -1) currentTermIndex = 0;
+            
+            renderTermTags();
+            renderDiet();
+        }
+        
+        function renderTermTags() {
+            const container = document.getElementById('term-tags');
+            container.innerHTML = dietData.map((term, i) => `
+                <span class="term-tag ${i === currentTermIndex ? 'active' : ''}" onclick="switchTerm(${i})">${term.name}</span>
+            `).join('');
+        }
+        
+        function switchTerm(index) {
+            currentTermIndex = index;
+            renderTermTags();
+            renderDiet();
+        }
+        
+        function getSeason(index) {
+            if (index >= 0 && index < 6) return 'spring';
+            if (index >= 6 && index < 12) return 'summer';
+            if (index >= 12 && index < 18) return 'autumn';
+            return 'winter';
+        }
+        
+        function renderDiet() {
+            const diet = dietData[currentTermIndex];
+            const container = document.getElementById('diet-content');
+            const season = getSeason(currentTermIndex);
+            
+            container.innerHTML = `
+                <div class="diet-hero">
+                    <div class="diet-name">${diet.name}</div>
+                    <div class="diet-date">📅 ${diet.date}</div>
+                    <div class="diet-principle">🎯 ${diet.principle}</div>
+                    <div class="season-indicator">
+                        <span class="season-dot spring ${season === 'spring' ? 'active' : ''}" title="春"></span>
+                        <span class="season-dot summer ${season === 'summer' ? 'active' : ''}" title="夏"></span>
+                        <span class="season-dot autumn ${season === 'autumn' ? 'active' : ''}" title="秋"></span>
+                        <span class="season-dot winter ${season === 'winter' ? 'active' : ''}" title="冬"></span>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-leaf"></i> 养生要点</div>
+                        <div class="desc-box">${diet.desc}</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-carrot"></i> 推荐食材</div>
+                        <div class="food-grid">
+                            ${diet.foods.map(f => `
+                                <div class="food-item">
+                                    <div class="food-icon">${foodIcons[f] || '🥗'}</div>
+                                    <div class="food-name">${f}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-ban"></i> 忌食</div>
+                        <div class="avoid-tags">
+                            ${diet.avoid.map(a => `<span class="avoid-tag">🚫 ${a}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-mug-hot"></i> 推荐汤饮</div>
+                        <div class="soup-box">
+                            <div class="soup-icon">🍲</div>
+                            <div class="soup-name">${diet.soup}</div>
+                            <div class="soup-label">本节气养生汤品</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        onReady(init);
+    </script>
+</body>
+</html>

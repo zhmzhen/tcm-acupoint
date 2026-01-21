@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>运动健康 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .fitness-hero {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 24px 16px;
+        }
+        
+        .fitness-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .target-symptoms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .symptom-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .fitness-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .fitness-selector {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .selector-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .fitness-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .fitness-tag {
+            padding: 6px 12px;
+            background: #fce4ec;
+            color: #c2185b;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .fitness-tag:hover {
+            background: #f8bbd9;
+        }
+        
+        .fitness-tag.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .muscle-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .muscle-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .muscle-info {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .exercise-item {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .exercise-num {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .exercise-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .exercise-detail {
+            font-size: 13px;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .exercise-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+        }
+        
+        .exercise-reps {
+            color: #f5576c;
+            font-weight: 500;
+        }
+        
+        .exercise-tips {
+            color: var(--text-light);
+        }
+        
+        .precaution-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+            color: #c62828;
+        }
+        
+        .precaution-list li {
+            margin-bottom: 6px;
+        }
+        
+        .benefits-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .benefit-tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>💪 运动健康</h1>
+        </div>
+        <p id="date-display"></p>
+    </div>
+    
+    <div class="fitness-selector">
+        <div class="selector-label">选择训练：</div>
+        <div class="fitness-tags" id="fitness-tags"></div>
+    </div>
+    
+    <div id="fitness-content"></div>
+    
+    <div class="container">
+        <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>温馨提示：</strong>运动前请充分热身，如有不适请立即停止并咨询医生。
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/fitness-data.js"></script>
+    <script>
+        let currentFitnessIndex = 0;
+        
+        function init() {
+            document.getElementById('date-display').textContent = getTodayString();
+            currentFitnessIndex = getDayOfYear() % fitnessData.length;
+            renderFitnessTags();
+            renderFitness();
+        }
+        
+        function renderFitnessTags() {
+            const container = document.getElementById('fitness-tags');
+            container.innerHTML = fitnessData.map((f, i) => `
+                <span class="fitness-tag ${i === currentFitnessIndex ? 'active' : ''}" onclick="switchFitness(${i})">${f.name}</span>
+            `).join('');
+        }
+        
+        function switchFitness(index) {
+            currentFitnessIndex = index;
+            renderFitnessTags();
+            renderFitness();
+        }
+        
+        function renderFitness() {
+            const fitness = fitnessData[currentFitnessIndex];
+            const container = document.getElementById('fitness-content');
+            
+            container.innerHTML = `
+                <div class="fitness-hero">
+                    <div class="fitness-name">${fitness.name}</div>
+                    <div class="target-symptoms">
+                        ${fitness.targetSymptoms.map(s => `<span class="symptom-tag">🎯 ${s}</span>`).join('')}
+                    </div>
+                    <div class="fitness-meta">
+                        <span>⏱️ ${fitness.duration}</span>
+                        <span>📅 ${fitness.frequency}</span>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-dumbbell"></i> 涉及肌肉</div>
+                        ${fitness.muscles.map(m => `
+                            <div class="muscle-item">
+                                <div class="muscle-name">${m.name}</div>
+                                <div class="muscle-info">
+                                    <div>📍 位置：${m.location}</div>
+                                    <div>⚡ 功能：${m.function}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-running"></i> 训练动作</div>
+                        ${fitness.exercises.map((e, i) => `
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-num">${i + 1}</span>
+                                    <span class="exercise-name">${e.name}</span>
+                                </div>
+                                <div class="exercise-detail">${e.detail}</div>
+                                <div class="exercise-meta">
+                                    <span class="exercise-reps">📊 ${e.reps}</span>
+                                    <span class="exercise-tips">💡 ${e.tips}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-exclamation-triangle"></i> 注意事项</div>
+                        <ul class="precaution-list">
+                            ${fitness.precautions.map(p => `<li>${p}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-heart"></i> 训练收益</div>
+                        <div class="benefits-grid">
+                            ${fitness.benefits.map(b => `<span class="benefit-tag">✓ ${b}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        onReady(init);
+    </script>
+</body>
+</html>

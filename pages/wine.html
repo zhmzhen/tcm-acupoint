@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>每日酒道 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .wine-hero {
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+            color: white;
+            padding: 24px 16px;
+            text-align: center;
+        }
+        
+        .wine-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .wine-type {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+        
+        .wine-origin {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .wine-rating {
+            font-size: 20px;
+        }
+        
+        .wine-selector {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .selector-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .wine-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .wine-tag {
+            padding: 6px 12px;
+            background: #fce4ec;
+            color: #c2185b;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .wine-tag:hover {
+            background: #f8bbd9;
+        }
+        
+        .wine-tag.active {
+            background: #c31432;
+            color: white;
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .spec-item {
+            background: #fce4ec;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .spec-label {
+            font-size: 11px;
+            color: #c2185b;
+            margin-bottom: 4px;
+        }
+        
+        .spec-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #880e4f;
+        }
+        
+        .tasting-box {
+            background: #fff8e1;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .tasting-item {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .tasting-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .tasting-item .label {
+            font-weight: 600;
+            color: #f57c00;
+        }
+        
+        .drinking-box {
+            background: #fce4ec;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .drinking-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .drinking-item {
+            text-align: center;
+        }
+        
+        .drinking-label {
+            font-size: 11px;
+            color: #c2185b;
+            margin-bottom: 4px;
+        }
+        
+        .drinking-value {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .pairing-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .pairing-tag {
+            background: #ffebee;
+            color: #c62828;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .history-box {
+            background: #f5f5f5;
+            border-left: 3px solid #c31432;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .tips-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 6px;
+        }
+        
+        .health-note {
+            background: #ffebee;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: #c62828;
+            margin-top: 12px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-row .label {
+            color: var(--text-light);
+        }
+        
+        .info-row .value {
+            font-weight: 500;
+            color: #c31432;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>🍷 每日酒道</h1>
+        </div>
+        <p id="date-display"></p>
+    </div>
+    
+    <div class="wine-selector">
+        <div class="selector-label">选择酒品：</div>
+        <div class="wine-tags" id="wine-tags"></div>
+    </div>
+    
+    <div id="wine-content"></div>
+    
+    <div class="container">
+        <div class="notice">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>健康提示：</strong>未成年人禁止饮酒，成年人请适量饮用，切勿酒后驾车。
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/wine-data.js"></script>
+    <script>
+        let currentWineIndex = 0;
+        
+        function init() {
+            document.getElementById('date-display').textContent = getTodayString();
+            currentWineIndex = getDayOfYear() % wineData.length;
+            renderWineTags();
+            renderWine();
+        }
+        
+        function renderWineTags() {
+            const container = document.getElementById('wine-tags');
+            container.innerHTML = wineData.map((wine, i) => `
+                <span class="wine-tag ${i === currentWineIndex ? 'active' : ''}" onclick="switchWine(${i})">${wine.name}</span>
+            `).join('');
+        }
+        
+        function switchWine(index) {
+            currentWineIndex = index;
+            renderWineTags();
+            renderWine();
+        }
+        
+        function renderWine() {
+            const wine = wineData[currentWineIndex];
+            const container = document.getElementById('wine-content');
+            
+            container.innerHTML = `
+                <div class="wine-hero">
+                    <div class="wine-name">${wine.name}</div>
+                    <div class="wine-type">${wine.type}</div>
+                    <div class="wine-origin">📍 ${wine.origin}</div>
+                    <div class="wine-rating">${wine.rating}</div>
+                </div>
+                
+                <div class="container">
+                    <div class="card">
+                        <div class="specs-grid">
+                            <div class="spec-item">
+                                <div class="spec-label">酒精度</div>
+                                <div class="spec-value">${wine.alcohol}</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">参考价格</div>
+                                <div class="spec-value">${wine.price.split('（')[0]}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-wine-glass-alt"></i> 品鉴笔记</div>
+                        <div class="tasting-box">
+                            <div class="tasting-item"><span class="label">外观：</span>${wine.appearance}</div>
+                            <div class="tasting-item"><span class="label">香气：</span>${wine.aroma}</div>
+                            <div class="tasting-item"><span class="label">口感：</span>${wine.taste}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-glass-cheers"></i> 饮用方式</div>
+                        <div class="drinking-box">
+                            <div class="drinking-grid">
+                                <div class="drinking-item">
+                                    <div class="drinking-label">温度</div>
+                                    <div class="drinking-value">${wine.drinking.temperature}</div>
+                                </div>
+                                <div class="drinking-item">
+                                    <div class="drinking-label">酒具</div>
+                                    <div class="drinking-value">${wine.drinking.vessel}</div>
+                                </div>
+                                <div class="drinking-item">
+                                    <div class="drinking-label">方式</div>
+                                    <div class="drinking-value">${wine.drinking.method}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-utensils"></i> 搭配推荐</div>
+                        <div class="pairing-tags">
+                            ${wine.pairing.map(p => `<span class="pairing-tag">${p}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-history"></i> 历史背景</div>
+                        <div class="history-box">${wine.history}</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-lightbulb"></i> 品饮小贴士</div>
+                        <ul class="tips-list">
+                            ${wine.tips.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                        <div class="health-note">
+                            <i class="fas fa-heart"></i> ${wine.healthNote}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        onReady(init);
+    </script>
+</body>
+</html>

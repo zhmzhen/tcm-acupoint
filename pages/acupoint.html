@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>穴位查询 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .search-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 20px 16px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .search-box button {
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary);
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .symptom-tags {
+            padding: 16px;
+            background: white;
+        }
+        
+        .tags-title {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .tags-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .symptom-tag {
+            padding: 8px 14px;
+            background: #f5f5f5;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .symptom-tag:hover {
+            background: #e8f5e9;
+            color: var(--primary);
+        }
+        
+        .results {
+            padding: 16px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .result-header h2 {
+            font-size: 18px;
+            color: var(--text);
+        }
+        
+        .close-btn {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .point-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .point-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .point-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .point-meridian {
+            font-size: 12px;
+            color: var(--text-light);
+            background: #f5f5f5;
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+        
+        .point-location {
+            background: #e8f5e9;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        
+        .point-effects {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .effect-tag {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .diet-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed #eee;
+        }
+        
+        .diet-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        
+        .diet-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .diet-item {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .massage-tip {
+            background: #fce4ec;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-top: 12px;
+            color: #c2185b;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .match-hint {
+            background: #fff8e1;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            color: #f57c00;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>🎯 穴位查询</h1>
+        </div>
+        <p>按症状搜索对应穴位</p>
+    </div>
+    
+    <div class="search-section">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="输入症状，如：头痛、失眠、颈椎痛...">
+            <button onclick="searchSymptom()"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+    
+    <div class="symptom-tags">
+        <div class="tags-title">🔥 常见症状</div>
+        <div class="tags-grid">
+            <span class="symptom-tag" onclick="selectSymptom('头痛')">头痛</span>
+            <span class="symptom-tag" onclick="selectSymptom('失眠')">失眠</span>
+            <span class="symptom-tag" onclick="selectSymptom('颈椎痛')">颈椎痛</span>
+            <span class="symptom-tag" onclick="selectSymptom('胃痛')">胃痛</span>
+            <span class="symptom-tag" onclick="selectSymptom('腰痛')">腰痛</span>
+            <span class="symptom-tag" onclick="selectSymptom('感冒')">感冒</span>
+            <span class="symptom-tag" onclick="selectSymptom('便秘')">便秘</span>
+            <span class="symptom-tag" onclick="selectSymptom('月经不调')">月经不调</span>
+            <span class="symptom-tag" onclick="selectSymptom('眼疲劳')">眼疲劳</span>
+            <span class="symptom-tag" onclick="selectSymptom('肩周炎')">肩周炎</span>
+            <span class="symptom-tag" onclick="selectSymptom('高血压')">高血压</span>
+            <span class="symptom-tag" onclick="selectSymptom('消化不良')">消化不良</span>
+            <span class="symptom-tag" onclick="selectSymptom('鼻炎')">鼻炎</span>
+            <span class="symptom-tag" onclick="selectSymptom('咳嗽')">咳嗽</span>
+            <span class="symptom-tag" onclick="selectSymptom('焦虑')">焦虑</span>
+        </div>
+    </div>
+    
+    <div class="results" id="results"></div>
+    
+    <div class="container">
+        <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>温馨提示：</strong>穴位按摩仅作保健参考，如有疾病请及时就医。
+        </div>
+    </div>
+    
+    <script src="js/common.js"></script>
+    <script src="js/acupoint-data.js"></script>
+    <script>
+        function searchSymptom() {
+            const input = document.getElementById('search-input').value.trim();
+            if (input) {
+                selectSymptom(input);
+            }
+        }
+        
+        function selectSymptom(symptom) {
+            document.getElementById('search-input').value = symptom;
+            
+            let data = acupointData[symptom];
+            let matchedSymptom = symptom;
+            let isExactMatch = true;
+            
+            // 精确匹配失败，尝试同义词
+            if (!data) {
+                const synonyms = symptomSynonyms[symptom];
+                if (synonyms) {
+                    for (const syn of synonyms) {
+                        if (acupointData[syn]) {
+                            data = acupointData[syn];
+                            matchedSymptom = syn;
+                            isExactMatch = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // 同义词失败，尝试模糊匹配
+            if (!data) {
+                for (const key in acupointData) {
+                    if (key.includes(symptom) || symptom.includes(key)) {
+                        data = acupointData[key];
+                        matchedSymptom = key;
+                        isExactMatch = false;
+                        break;
+                    }
+                }
+            }
+            
+            if (data) {
+                renderResults(matchedSymptom, data, isExactMatch ? null : symptom);
+            } else {
+                showNoResults(symptom);
+            }
+        }
+        
+        function renderResults(symptom, data, originalQuery) {
+            const resultsDiv = document.getElementById('results');
+            
+            // 获取穴位详细信息
+            const pointsHtml = data.points.map(pointName => {
+                const pointInfo = dailyAcupointList.find(p => p.name === pointName);
+                if (pointInfo) {
+                    return `
+                        <div class="point-card">
+                            <div class="point-header">
+                                <span class="point-name">${pointInfo.name}</span>
+                                <span class="point-meridian">${pointInfo.meridian}</span>
+                            </div>
+                            <div class="point-location">
+                                <strong>📍 定位：</strong>${pointInfo.location}
+                            </div>
+                            <div class="point-effects">
+                                ${pointInfo.effects.map(e => `<span class="effect-tag">${e}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                return `<div class="point-card"><span class="point-name">${pointName}</span></div>`;
+            }).join('');
+            
+            resultsDiv.innerHTML = `
+                <div class="result-header">
+                    <h2>🩺 ${symptom} - 推荐穴位</h2>
+                    <button class="close-btn" onclick="hideResults()"><i class="fas fa-times"></i> 关闭</button>
+                </div>
+                
+                ${originalQuery ? `<div class="match-hint">💡 根据"${originalQuery}"为您匹配到"${symptom}"相关穴位</div>` : ''}
+                
+                ${pointsHtml}
+                
+                <div class="card">
+                    <div class="diet-title">🥗 饮食调理建议</div>
+                    <div class="diet-items">
+                        ${data.diet.map(d => `<span class="diet-item">${d}</span>`).join('')}
+                    </div>
+                    
+                    <div class="massage-tip">
+                        <strong>💆 按摩建议：</strong>${data.massage}
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showNoResults(symptom) {
+            const resultsDiv = document.getElementById('results');
+            const suggestions = Object.keys(acupointData).slice(0, 5);
+            
+            resultsDiv.innerHTML = `
+                <div class="result-header">
+                    <h2>搜索结果</h2>
+                    <button class="close-btn" onclick="hideResults()"><i class="fas fa-times"></i> 关闭</button>
+                </div>
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>未找到"${symptom}"相关的穴位信息</p>
+                    <p style="font-size: 13px; margin-top: 10px;">试试这些：${suggestions.map(s => `<span class="symptom-tag" onclick="selectSymptom('${s}')" style="margin: 4px;">${s}</span>`).join('')}</p>
+                </div>
+            `;
+            
+            resultsDiv.classList.add('show');
+        }
+        
+        function hideResults() {
+            document.getElementById('results').classList.remove('show');
+        }
+        
+        // 回车搜索
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchSymptom();
+            }
+        });
+    </script>
+</body>
+</html>

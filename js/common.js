@@ -45,7 +45,7 @@ const storage = {
 
 // 返回首页
 function goHome() {
-    window.location.href = '../index.html';
+    window.location.href = 'index.html';
 }
 
 // 计算两点之间的距离（用于定位）
