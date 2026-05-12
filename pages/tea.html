@@ -222,9 +222,10 @@
         </div>
     </div>
     
-    <script src="js/common.js"></script>
-    <script src="js/tea-data.js"></script>
-    <script>
+    <script type="module">
+        import { getTodayString, getDayOfYear, onReady } from '../js/common.js';
+        import { teaData } from '../js/tea-data.js';
+
         let currentTeaIndex = 0;
         
         function init() {
@@ -237,7 +238,7 @@
         function renderTeaTags() {
             const container = document.getElementById('tea-tags');
             container.innerHTML = teaData.map((tea, i) => `
-                <span class="tea-tag ${i === currentTeaIndex ? 'active' : ''}" onclick="switchTea(${i})">${tea.name}</span>
+                <span class="tea-tag ${i === currentTeaIndex ? 'active' : ''}" data-tea-index="${i}">${tea.name}</span>
             `).join('');
         }
         
@@ -331,7 +332,15 @@
             `;
         }
         
-        onReady(init);
+        onReady(() => {
+            document.getElementById('tea-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('.tea-tag');
+                if (tag && tag.dataset.teaIndex !== undefined) {
+                    switchTea(parseInt(tag.dataset.teaIndex));
+                }
+            });
+            init();
+        });
     </script>
 </body>
 </html>

@@ -214,9 +214,10 @@
         </div>
     </div>
     
-    <script src="js/common.js"></script>
-    <script src="js/tide-data.js"></script>
-    <script>
+    <script type="module">
+        import { getTodayString, calculateDistance, getUserLocation, onReady } from '../js/common.js';
+        import { tideData } from '../js/tide-data.js';
+
         let currentCityIndex = 0;
         
         function init() {
@@ -256,7 +257,7 @@
         function renderCityTags() {
             const container = document.getElementById('city-tags');
             container.innerHTML = tideData.map((city, i) => `
-                <span class="city-tag ${i === currentCityIndex ? 'active' : ''}" onclick="switchCity(${i})">${city.location.replace(/^.+?省|^.+?市/, '')}</span>
+                <span class="city-tag ${i === currentCityIndex ? 'active' : ''}" data-city-index="${i}">${city.location.replace(/^.+?省|^.+?市/, '')}</span>
             `).join('');
         }
         
@@ -347,7 +348,15 @@
             `;
         }
         
-        onReady(init);
+        onReady(() => {
+            document.getElementById('city-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('.city-tag');
+                if (tag && tag.dataset.cityIndex !== undefined) {
+                    switchCity(parseInt(tag.dataset.cityIndex));
+                }
+            });
+            init();
+        });
     </script>
 </body>
 </html>

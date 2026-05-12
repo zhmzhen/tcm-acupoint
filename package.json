@@ -1,0 +1,16 @@
+{
+  "name": "tcm-acupoint",
+  "version": "2.0.0",
+  "description": "中医养生 H5 应用 - 穴位查询、节气饮食、运动健康",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "vitest": "^1.6.0"
+  },
+  "license": "MIT"
+}

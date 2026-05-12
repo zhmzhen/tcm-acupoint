@@ -1,5 +1,5 @@
 // 酒道数据
-const wineData = [
+export const wineData = [
     {
         name: '贵州茅台',
         type: '酱香型白酒',

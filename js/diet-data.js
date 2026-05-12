@@ -1,5 +1,5 @@
 // 二十四节气饮食数据
-const dietData = [
+export const dietData = [
     { name: '立春', date: '2月3-5日', principle: '养肝护阳', foods: ['韭菜', '豆芽', '香椿', '菠菜'], avoid: ['辛辣', '油腻'], soup: '枸杞菊花茶', desc: '春季阳气初生，宜食辛甘发散之品' },
     { name: '雨水', date: '2月18-20日', principle: '健脾祛湿', foods: ['山药', '薏米', '红枣', '莲子'], avoid: ['生冷', '黏腻'], soup: '山药薏米粥', desc: '雨水增多，注意健脾化湿' },
     { name: '惊蛰', date: '3月5-7日', principle: '清肝泻火', foods: ['梨', '荠菜', '芹菜', '菊花'], avoid: ['动火食物'], soup: '菊花枸杞茶', desc: '阳气渐盛，宜清淡平和' },
@@ -27,7 +27,7 @@ const dietData = [
 ];
 
 // 获取当前节气
-function getCurrentSolarTerm() {
+export function getCurrentSolarTerm() {
     const now = new Date();
     const month = now.getMonth() + 1;
     const day = now.getDate();

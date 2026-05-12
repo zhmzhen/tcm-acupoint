@@ -187,9 +187,10 @@
         </div>
     </div>
     
-    <script src="js/common.js"></script>
-    <script src="js/diet-data.js"></script>
-    <script>
+    <script type="module">
+        import { getTodayString, getDayOfYear, onReady } from '../js/common.js';
+        import { dietData, getCurrentSolarTerm } from '../js/diet-data.js';
+
         let currentTermIndex = 0;
         
         const foodIcons = {
@@ -223,7 +224,7 @@
         function renderTermTags() {
             const container = document.getElementById('term-tags');
             container.innerHTML = dietData.map((term, i) => `
-                <span class="term-tag ${i === currentTermIndex ? 'active' : ''}" onclick="switchTerm(${i})">${term.name}</span>
+                <span class="term-tag ${i === currentTermIndex ? 'active' : ''}" data-term-index="${i}">${term.name}</span>
             `).join('');
         }
         
@@ -295,7 +296,15 @@
             `;
         }
         
-        onReady(init);
+        onReady(() => {
+            document.getElementById('term-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('.term-tag');
+                if (tag && tag.dataset.termIndex !== undefined) {
+                    switchTerm(parseInt(tag.dataset.termIndex));
+                }
+            });
+            init();
+        });
     </script>
 </body>
 </html>

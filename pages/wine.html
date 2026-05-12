@@ -236,9 +236,10 @@
         </div>
     </div>
     
-    <script src="js/common.js"></script>
-    <script src="js/wine-data.js"></script>
-    <script>
+    <script type="module">
+        import { getTodayString, getDayOfYear, onReady } from '../js/common.js';
+        import { wineData } from '../js/wine-data.js';
+
         let currentWineIndex = 0;
         
         function init() {
@@ -251,7 +252,7 @@
         function renderWineTags() {
             const container = document.getElementById('wine-tags');
             container.innerHTML = wineData.map((wine, i) => `
-                <span class="wine-tag ${i === currentWineIndex ? 'active' : ''}" onclick="switchWine(${i})">${wine.name}</span>
+                <span class="wine-tag ${i === currentWineIndex ? 'active' : ''}" data-wine-index="${i}">${wine.name}</span>
             `).join('');
         }
         
@@ -341,7 +342,15 @@
             `;
         }
         
-        onReady(init);
+        onReady(() => {
+            document.getElementById('wine-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('.wine-tag');
+                if (tag && tag.dataset.wineIndex !== undefined) {
+                    switchWine(parseInt(tag.dataset.wineIndex));
+                }
+            });
+            init();
+        });
     </script>
 </body>
 </html>

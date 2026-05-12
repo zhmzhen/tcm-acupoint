@@ -1,5 +1,5 @@
 // 潮汐与水产数据
-const tideData = [
+export const tideData = [
     {
         location: '山东青岛',
         coords: '北纬36°04′ 东经120°23′',

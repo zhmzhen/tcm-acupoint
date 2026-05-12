@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <base href="../">
+    <title>每日花语 - 中医养生</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* 全局优化 */
+        body {
+            background: linear-gradient(180deg, #fff5f7 0%, #ffffff 100%);
+        }
+        
+        .card {
+            box-shadow: 0 4px 20px rgba(255, 182, 193, 0.15);
+            border: 1px solid rgba(255, 182, 193, 0.2);
+        }
+        
+        .section-title {
+            color: #c44569;
+        }
+        
+        .flower-hero {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            color: white;
+            padding: 40px 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(255, 154, 158, 0.3);
+        }
+        
+        .flower-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .flower-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-30px, -30px) rotate(180deg); }
+        }
+        
+        .flower-image-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(255, 154, 158, 0.5), 0 0 0 4px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #fff 0%, #fecfef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+        
+        .flower-image-container:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+        
+        .flower-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        
+        .flower-image-container:hover .flower-image {
+            transform: scale(1.1);
+        }
+        
+        .flower-icon {
+            font-size: 64px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+        
+        .flower-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .flower-name-en {
+            font-size: 15px;
+            opacity: 0.95;
+            margin-bottom: 10px;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .flower-language {
+            font-size: 17px;
+            opacity: 0.98;
+            font-weight: 500;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .flower-section {
+            margin-bottom: 16px;
+        }
+        
+        .meaning-box {
+            background: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.8;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+        }
+        
+        .holiday-card {
+            background: linear-gradient(135deg, #fff 0%, #fff5f7 100%);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .holiday-card:hover {
+            box-shadow: 0 4px 16px rgba(255, 182, 193, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .holiday-title {
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .holiday-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .holiday-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .holiday-name {
+            font-weight: 600;
+            color: #c44569;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .holiday-detail {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .holiday-tips {
+            font-size: 12px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        .care-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .care-item {
+            background: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 182, 193, 0.2);
+            box-shadow: 0 2px 4px rgba(255, 182, 193, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .care-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 182, 193, 0.2);
+        }
+        
+        .care-label {
+            font-size: 11px;
+            color: #c44569;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        
+        .care-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #880e4f;
+            line-height: 1.5;
+        }
+        
+        .care-tips {
+            background: linear-gradient(135deg, #fff 0%, #fff5f7 100%);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.8;
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-row .label {
+            color: var(--text-light);
+        }
+        
+        .info-row .value {
+            font-weight: 500;
+            color: #c44569;
+            text-align: right;
+        }
+        
+        .color-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .color-tag {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
+            color: #c44569;
+            border-radius: 15px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 154, 158, 0.3);
+            font-weight: 500;
+        }
+        
+        .flower-selector {
+            padding: 16px;
+            background: linear-gradient(135deg, #fff 0%, #fff5f7 100%);
+            border-bottom: 1px solid rgba(255, 182, 193, 0.2);
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+        }
+        
+        .selector-label {
+            font-size: 13px;
+            color: #c44569;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .flower-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .flower-tag {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
+            color: #c44569;
+            border: 1.5px solid rgba(255, 154, 158, 0.3);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.15);
+        }
+        
+        .flower-tag:hover {
+            background: linear-gradient(135deg, #ffeef2 0%, #ffd6e0 100%);
+            border-color: #ff9a9e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 154, 158, 0.25);
+        }
+        
+        .flower-tag.active {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            border-color: #ff6b9d;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(255, 107, 157, 0.4);
+        }
+        
+        .flower-tag.suitable {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%);
+            color: #e65100;
+            border-color: #ffb74d;
+            border-width: 2px;
+            box-shadow: 0 2px 8px rgba(255, 183, 77, 0.2);
+        }
+        
+        .holiday-selector {
+            padding: 16px;
+            background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
+            border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+        }
+        
+        .holiday-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .plant-selector {
+            padding: 16px;
+            background: linear-gradient(135deg, #fff 0%, #f1f8e9 100%);
+            border-bottom: 1px solid rgba(76, 175, 80, 0.2);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
+        }
+        
+        .plant-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .plant-tag {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+            color: #2e7d32;
+            border: 1.5px solid rgba(76, 175, 80, 0.3);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.15);
+        }
+        
+        .plant-tag:hover {
+            background: linear-gradient(135deg, #dcedc8 0%, #c5e1a5 100%);
+            border-color: #4caf50;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25);
+        }
+        
+        .plant-tag.active {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            border-color: #2e7d32;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
+        }
+        
+        .holiday-tag {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0;
+            border: 1.5px solid rgba(33, 150, 243, 0.3);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+        }
+        
+        .holiday-tag:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+            border-color: #2196f3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
+        }
+        
+        .holiday-tag.active {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border-color: #1976d2;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.4);
+        }
+        
+        .holiday-guide-section {
+            margin-top: 20px;
+        }
+        
+        .guide-holiday {
+            background: linear-gradient(135deg, #fff 0%, #fff5f7 100%);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 12px rgba(255, 182, 193, 0.15);
+            transition: all 0.3s;
+        }
+        
+        .guide-holiday:hover {
+            box-shadow: 0 4px 20px rgba(255, 182, 193, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .guide-holiday-title {
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .guide-holiday-date {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .guide-recommendation {
+            margin-bottom: 8px;
+        }
+        
+        .guide-flower-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .guide-flower-item:before {
+            content: '🌸';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+        }
+        
+        .guide-tips {
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 182, 193, 0.2);
+            font-style: italic;
+            line-height: 1.6;
+            background: linear-gradient(135deg, rgba(255, 245, 247, 0.5) 0%, transparent 100%);
+            padding-left: 8px;
+            padding-right: 8px;
+            border-radius: 8px;
+        }
+        
+        .flower-list-item {
+            background: #fff;
+            border: 1px solid #f8bbd0;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .flower-list-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+        
+        .flower-list-content {
+            flex: 1;
+        }
+        
+        .flower-list-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #880e4f;
+            margin-bottom: 4px;
+        }
+        
+        .flower-list-name-en {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .flower-list-language {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .flower-list-meaning {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .flower-grid-container {
+            position: relative;
+            margin: 16px 0;
+        }
+        
+        .flower-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .flower-grid-item {
+            background: linear-gradient(135deg, #fff 0%, #fff5f7 100%);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(255, 182, 193, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flower-grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .flower-grid-item:hover::before {
+            left: 100%;
+        }
+        
+        .flower-grid-item:hover {
+            border-color: #ff9a9e;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 154, 158, 0.3);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(255, 154, 158, 0.3);
+        }
+        
+        .flower-grid-image-container {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(135deg, #fff 0%, #fecfef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .flower-grid-item:hover .flower-grid-image-container {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 24px rgba(255, 154, 158, 0.5);
+        }
+        
+        .flower-grid-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        
+        .flower-grid-item:hover .flower-grid-image {
+            transform: scale(1.15);
+        }
+        
+        .flower-grid-icon {
+            font-size: 56px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .flower-grid-name {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+        
+        .flower-grid-name-en {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .flower-grid-language {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
+        .flower-grid-recommend {
+            font-size: 12px;
+            background: linear-gradient(135deg, #ffeef2 0%, #fff5f7 100%);
+            color: #c44569;
+            font-weight: 500;
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 154, 158, 0.2);
+            line-height: 1.6;
+        }
+        
+        /* 图片加载动画 */
+        .flower-image, .flower-grid-image {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .flower-image-container, .flower-grid-image-container {
+            position: relative;
+        }
+        
+        .flower-image-container::after, .flower-grid-image-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 154, 158, 0.1) 0%, rgba(254, 207, 239, 0.1) 100%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .flower-grid-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .flower-nav-btn {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(255, 154, 158, 0.3);
+        }
+        
+        .flower-nav-btn:hover {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9a9e 100%);
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.4);
+        }
+        
+        .flower-nav-btn:active {
+            transform: scale(1.05);
+        }
+        
+        .flower-nav-btn:disabled {
+            background: #e0e0e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-with-back">
+            <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> 首页</a>
+            <h1>🌸 每日花语</h1>
+        </div>
+        <p id="date-display"></p>
+    </div>
+    
+    <div class="flower-selector">
+        <div class="selector-label">选择花卉：</div>
+        <div class="flower-tags" id="flower-tags"></div>
+    </div>
+    
+    <div class="plant-selector">
+        <div class="selector-label">选择植物：</div>
+        <div class="plant-tags" id="plant-tags"></div>
+    </div>
+    
+    <div class="holiday-selector">
+        <div class="selector-label">选择节日：</div>
+        <div class="holiday-tags" id="holiday-tags"></div>
+    </div>
+    
+    <div id="flower-content"></div>
+    
+    <div class="container">
+        <div class="holiday-guide-section">
+            <div class="card">
+                <div class="section-title"><i class="fas fa-calendar-alt"></i> 节日送花指南</div>
+                <div id="holiday-guide"></div>
+            </div>
+        </div>
+        
+        <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <strong>温馨提示：</strong>送花时注意花语含义，不同颜色和数量有不同的寓意。选择合适的花卉表达心意。
+        </div>
+    </div>
+    
+    <script type="module">
+        import { getTodayString, getDayOfYear, onReady } from '../js/common.js';
+        import { flowerData } from '../js/flower-data.js';
+
+        let currentFlowerIndex = 0;
+        let currentHoliday = null;
+        let currentPlant = null;
+        let currentPageIndex = 0;
+        
+        // 处理图片加载错误
+        function handleImageError(img, icon, type) {
+            img.onerror = null; // 防止无限循环
+            const container = img.parentElement;
+            if (type === 'hero') {
+                container.innerHTML = `<div class="flower-icon">${icon}</div>`;
+            } else {
+                container.innerHTML = `<div class="flower-grid-icon">${icon}</div>`;
+            }
+        }
+        
+        // 使用缓存系统加载图片
+        async function loadImageWithCache(imgElement, originalUrl, icon, type) {
+            if (!originalUrl || !imgElement) {
+                if (imgElement) {
+                    handleImageError(imgElement, icon, type);
+                }
+                return;
+            }
+            
+            // 如果图片已经有 src，说明已经加载过了
+            if (imgElement.src && imgElement.src !== '') {
+                return;
+            }
+            
+            // 如果是本地图片路径（不以 http 开头），直接使用
+            if (!originalUrl.startsWith('http://') && !originalUrl.startsWith('https://')) {
+                imgElement.src = originalUrl;
+                imgElement.onerror = () => {
+                    handleImageError(imgElement, icon, type);
+                };
+                return;
+            }
+            
+            try {
+                // 检查 imageCache 是否已初始化
+                if (typeof imageCache === 'undefined' || !imageCache) {
+                    // 如果缓存系统未初始化，直接使用原始 URL
+                    imgElement.src = originalUrl;
+                    imgElement.onerror = () => {
+                        handleImageError(imgElement, icon, type);
+                    };
+                    return;
+                }
+                
+                // 使用缓存系统获取图片
+                const cachedUrl = await imageCache.getImage(originalUrl);
+                if (cachedUrl) {
+                    imgElement.src = cachedUrl;
+                    
+                    imgElement.onerror = () => {
+                        // 如果缓存图片加载失败，尝试使用原始 URL
+                        imgElement.src = originalUrl;
+                        imgElement.onerror = () => {
+                            handleImageError(imgElement, icon, type);
+                        };
+                    };
+                } else {
+                    // 如果获取失败，使用原始 URL
+                    imgElement.src = originalUrl;
+                    imgElement.onerror = () => {
+                        handleImageError(imgElement, icon, type);
+                    };
+                }
+            } catch (error) {
+                console.error('加载图片失败:', error);
+                // 如果缓存系统失败，直接使用原始 URL
+                imgElement.src = originalUrl;
+                imgElement.onerror = () => {
+                    handleImageError(imgElement, icon, type);
+                };
+            }
+        }
+        
+        // 初始化图片懒加载
+        let imageObserver = null;
+        function initImageLazyLoad() {
+            // 如果观察者已存在，先断开
+            if (imageObserver) {
+                imageObserver.disconnect();
+            }
+            
+            // 创建新的观察者
+            imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const dataSrc = img.getAttribute('data-src');
+                        const icon = img.getAttribute('data-icon') || '🌺';
+                        const type = img.getAttribute('data-type') || 'grid';
+                        
+                        if (dataSrc && !img.src) {
+                            loadImageWithCache(img, dataSrc, icon, type);
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '50px' // 提前50px开始加载
+            });
+            
+            // 观察所有带有 data-src 且还没有 src 的图片
+            document.querySelectorAll('img[data-src]:not([src])').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+        
+        // 获取花卉图片URL（使用Pixabay API，更可靠）
+        function getFlowerImageUrl(nameEn, size = 400) {
+            // 如果数据中有imageUrl，直接使用
+            const flower = flowerData.find(f => f.nameEn === nameEn);
+            if (flower && flower.imageUrl) {
+                return flower.imageUrl;
+            }
+            
+            // 使用Pixabay API（免费且稳定）
+            const searchTerms = {
+                'Rose': 'rose',
+                'Carnation': 'carnation',
+                'Lily': 'lily flower',
+                'Sunflower': 'sunflower',
+                'Tulip': 'tulip',
+                'Jasmine': 'jasmine',
+                'Peony': 'peony',
+                'Chrysanthemum': 'chrysanthemum',
+                'Plum Blossom': 'plum blossom',
+                'Orchid': 'orchid',
+                'Lavender': 'lavender',
+                'Baby\'s Breath': 'gypsophila',
+                'Forget-me-not': 'forget me not',
+                'Hyacinth': 'hyacinth',
+                'Narcissus': 'narcissus',
+                'Begonia': 'begonia',
+                'Peach Blossom': 'peach blossom',
+                'Cherry Blossom': 'cherry blossom',
+                'Lotus': 'lotus',
+                'Violet': 'violet flower',
+                'Phalaenopsis': 'phalaenopsis'
+            };
+            const searchTerm = searchTerms[nameEn] || nameEn.toLowerCase();
+            // 使用Pixabay免费API（无需key，但有速率限制）
+            return `https://pixabay.com/api/?key=9656065-a4094594c34c9b8b50e6c2840&q=${encodeURIComponent(searchTerm)}&image_type=photo&category=nature&per_page=3&safesearch=true`;
+        }
+        
+        // 改进：使用更简单直接的方式获取图片
+        function getFlowerImageUrlDirect(nameEn, size = 400) {
+            // 如果数据中有imageUrl，直接使用
+            const flower = flowerData.find(f => f.nameEn === nameEn);
+            if (flower && flower.imageUrl) {
+                return flower.imageUrl;
+            }
+            
+            // 所有花卉都使用搜索API获取真实图片，确保每个花卉都有对应的真实图片
+            const searchMap = {
+                'Rose': 'rose,red-rose,flower',
+                'Carnation': 'carnation,flower',
+                'Lily': 'white-lily,oriental-lily,flower',
+                'Sunflower': 'sunflower,yellow-flower',
+                'Tulip': 'tulip,flower',
+                'Jasmine': 'jasmine,white-flower',
+                'Peony': 'peony,flower',
+                'Chrysanthemum': 'chrysanthemum,flower',
+                'Plum Blossom': 'plum-blossom,flower',
+                'Orchid': 'orchid,flower',
+                'Lavender': 'lavender,purple-flower',
+                'Baby\'s Breath': 'gypsophila,baby-breath,flower',
+                'Forget-me-not': 'forget-me-not,blue-flower,myosotis',
+                'Hyacinth': 'hyacinth,flower',
+                'Narcissus': 'narcissus,daffodil,flower',
+                'Begonia': 'begonia,flower',
+                'Peach Blossom': 'peach-blossom,peach-flower',
+                'Cherry Blossom': 'cherry-blossom,sakura,flower',
+                'Lotus': 'lotus,water-lily,flower',
+                'Violet': 'violet,flower,purple',
+                'Phalaenopsis': 'phalaenopsis,orchid,flower'
+            };
+            const searchTerm = searchMap[nameEn] || nameEn.toLowerCase() + ' flower';
+            // 使用Unsplash的featured搜索，确保返回高质量真实图片
+            // 使用固定的sig参数确保每个花卉都有稳定的图片
+            const sigMap = {
+                'Rose': 'rose',
+                'Carnation': 'carnation',
+                'Lily': 'lily',
+                'Sunflower': 'sunflower',
+                'Tulip': 'tulip',
+                'Jasmine': 'jasmine',
+                'Peony': 'peony',
+                'Chrysanthemum': 'chrysanthemum',
+                'Plum Blossom': 'plum',
+                'Orchid': 'orchid',
+                'Lavender': 'lavender',
+                'Baby\'s Breath': 'babysbreath',
+                'Forget-me-not': 'forgetmenot',
+                'Hyacinth': 'hyacinth',
+                'Narcissus': 'narcissus',
+                'Begonia': 'begonia',
+                'Peach Blossom': 'peach',
+                'Cherry Blossom': 'cherry',
+                'Lotus': 'lotus',
+                'Violet': 'violet',
+                'Phalaenopsis': 'phalaenopsis'
+            };
+            const sig = sigMap[nameEn] || nameEn.toLowerCase();
+            return `https://source.unsplash.com/featured/${size}x${size}/?${encodeURIComponent(searchTerm)}&sig=${sig}`;
+        }
+        
+        // 根据花卉名称找到花卉数据
+        function findFlowerByName(name) {
+            // 精确匹配
+            let flower = flowerData.find(f => f.name === name);
+            if (flower) return flower;
+            
+            // 处理名称匹配（可能包含"红玫瑰"、"粉玫瑰"等，需要匹配"玫瑰"）
+            const baseName = name.replace(/^(红|粉|白|黄|蓝|紫|香槟|彩)/, '');
+            flower = flowerData.find(f => f.name === baseName);
+            if (flower) return flower;
+            
+            // 包含匹配
+            flower = flowerData.find(f => name.includes(f.name) || f.name.includes(baseName));
+            if (flower) return flower;
+            
+            // 特殊匹配（处理"白菊"匹配"菊花"）
+            if (name.includes('菊')) {
+                return flowerData.find(f => f.name.includes('菊'));
+            }
+            
+            // 处理"艾草"和"菖蒲"等不在数据库中的花卉
+            // 这些会在renderHolidayGuide中处理
+            return null;
+        }
+        
+        // 获取适合某个节日的花卉索引列表（包括不在数据库中的花卉）
+        function getFlowersForHoliday(holiday) {
+            if (!holiday || !holidayFlowerGuide[holiday]) {
+                return [];
+            }
+            const guide = holidayFlowerGuide[holiday];
+            const flowerIndices = [];
+            
+            guide.recommended.forEach((rec, idx) => {
+                const flower = findFlowerByName(rec.flower);
+                if (flower) {
+                    const index = flowerData.indexOf(flower);
+                    if (index !== -1 && !flowerIndices.includes(index)) {
+                        flowerIndices.push(index);
+                    }
+                } else {
+                    // 不在数据库中的花卉（如艾草、菖蒲），使用负数索引来标记
+                    // 使用 -(idx + 1000) 作为特殊标记，实际渲染时会根据原始索引找到对应的rec
+                    flowerIndices.push(-(idx + 1000));
+                }
+            });
+            
+            return flowerIndices;
+        }
+        
+        function init() {
+            document.getElementById('date-display').textContent = getTodayString();
+            currentFlowerIndex = getDayOfYear() % flowerData.length;
+            renderFlowerTags();
+            renderHolidayTags();
+            renderPlantTags();
+            renderFlower();
+            renderHolidayGuide();
+            
+            // 初始化图片懒加载
+            setTimeout(() => {
+                initImageLazyLoad();
+            }, 100);
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
+        
+        function renderFlowerTags() {
+            const container = document.getElementById('flower-tags');
+            const suitableIndices = currentHoliday ? getFlowersForHoliday(currentHoliday).filter(idx => idx >= 0) : [];
+            
+            container.innerHTML = flowerData.map((flower, i) => {
+                const isActive = i === currentFlowerIndex && !currentHoliday; // 只有未选择节日时才高亮单个花卉
+                const isSuitable = suitableIndices.includes(i);
+                let className = 'flower-tag';
+                if (isActive) className += ' active';
+                if (currentHoliday && isSuitable) className += ' suitable';
+                
+                return `<span class="${className}" data-flower-index="${i}">${flower.icon} ${flower.name}</span>`;
+            }).join('');
+        }
+        
+        function renderHolidayTags() {
+            const container = document.getElementById('holiday-tags');
+            const holidays = Object.keys(holidayFlowerGuide);
+            container.innerHTML = `
+                <span class="holiday-tag ${currentHoliday === null ? 'active' : ''}" data-holiday="">全部</span>
+                ${holidays.map(holiday => `
+                    <span class="holiday-tag ${currentHoliday === holiday ? 'active' : ''}" data-holiday="${holiday}">${holiday}</span>
+                `).join('')}
+            `;
+        }
+        
+        function renderPlantTags() {
+            const container = document.getElementById('plant-tags');
+            if (!container || typeof plantData === 'undefined') return;
+            const plants = Object.keys(plantData);
+            container.innerHTML = `
+                <span class="plant-tag ${currentPlant === null ? 'active' : ''}" data-plant="">全部</span>
+                ${plants.map(plant => `
+                    <span class="plant-tag ${currentPlant === plant ? 'active' : ''}" data-plant="${plant}">${plantData[plant].icon} ${plant}</span>
+                `).join('')}
+            `;
+        }
+        
+        function switchPlant(plant) {
+            currentPlant = plant;
+            currentHoliday = null; // 选择植物时，重置节日选择
+            currentFlowerIndex = 0;
+            currentPageIndex = 0;
+            renderPlantTags();
+            renderHolidayTags();
+            renderFlowerTags();
+            renderFlower();
+            renderHolidayGuide();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function switchFlower(index) {
+            // 处理负数索引（虚拟花卉，不在数据库中）
+            if (index < 0) {
+                alert('该植物为传统习俗植物，暂无详细信息。请选择其他花卉查看详情。');
+                return;
+            }
+            
+            // 确保索引有效
+            if (index < 0 || index >= flowerData.length) {
+                return;
+            }
+            
+            currentFlowerIndex = index;
+            // 点击花卉时，自动将节日和植物切换为"全部"
+            if (currentHoliday !== null) {
+                currentHoliday = null;
+                currentPageIndex = 0;
+                renderHolidayTags();
+            }
+            if (currentPlant !== null) {
+                currentPlant = null;
+                renderPlantTags();
+            }
+            renderFlowerTags();
+            renderFlower();
+            renderHolidayGuide();
+            
+            // 初始化图片懒加载
+            setTimeout(() => {
+                initImageLazyLoad();
+            }, 100);
+            
+            // 滚动到顶部，确保用户能看到详情
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function switchHoliday(holiday) {
+            currentHoliday = holiday;
+            currentPlant = null; // 选择节日时，重置植物选择
+            currentPageIndex = 0; // 重置到第一页
+            renderHolidayTags();
+            renderPlantTags();
+            
+            // 如果选择了节日，找到第一个适合的花卉并显示
+            if (holiday) {
+                const suitableIndices = getFlowersForHoliday(holiday);
+                if (suitableIndices.length > 0) {
+                    currentFlowerIndex = suitableIndices[0];
+                }
+            }
+            
+            renderFlowerTags();
+            renderFlower();
+            renderHolidayGuide();
+            
+            // 初始化图片懒加载
+            setTimeout(() => {
+                initImageLazyLoad();
+            }, 100);
+        }
+        
+        function nextFlowerPage() {
+            if (!currentHoliday) return;
+            const suitableIndices = getFlowersForHoliday(currentHoliday);
+            const totalPages = Math.ceil(suitableIndices.length / 2);
+            currentPageIndex = (currentPageIndex + 1) % totalPages;
+            renderFlower();
+        }
+        
+        function prevFlowerPage() {
+            if (!currentHoliday) return;
+            const suitableIndices = getFlowersForHoliday(currentHoliday);
+            const totalPages = Math.ceil(suitableIndices.length / 2);
+            currentPageIndex = (currentPageIndex - 1 + totalPages) % totalPages;
+            renderFlower();
+        }
+        
+        function renderFlower() {
+            const container = document.getElementById('flower-content');
+            
+            // 如果选择了植物，显示植物详情
+            if (currentPlant && typeof plantData !== 'undefined' && plantData[currentPlant]) {
+                const plant = plantData[currentPlant];
+                // 使用更具体的搜索词确保获取真实植物图片
+                const plantSearchMap = {
+                    '艾草': 'mugwort,artemisia,herb,plant',
+                    '菖蒲': 'calamus,acorus,plant',
+                    '茱萸': 'cornel,berry,plant',
+                    '桂花': 'osmanthus,flower'
+                };
+                const searchTerm = plantSearchMap[plant.name] || plant.nameEn + ' plant';
+                const plantImageUrl = plant.imageUrl || `https://source.unsplash.com/featured/400x400/?${encodeURIComponent(searchTerm)}&sig=${Math.random()}`;
+                container.innerHTML = `
+                    <div class="flower-hero">
+                        <div class="flower-image-container">
+                            <img data-src="${plantImageUrl}" data-icon="${plant.icon}" data-type="hero" alt="${plant.name}" class="flower-image" 
+                                 loading="lazy">
+                        </div>
+                        <div class="flower-name">${plant.name}</div>
+                        <div class="flower-name-en">${plant.nameEn}</div>
+                        <div class="flower-language">${plant.meaning}</div>
+                    </div>
+                    <div class="container">
+                        <div class="card">
+                            <div class="section-title">${plant.name}简介</div>
+                            <div class="meaning-box">
+                                <p>${plant.description}</p>
+                            </div>
+                            <div class="section-title">传统用途</div>
+                            <div class="meaning-box">
+                                <p>${plant.usage}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                // 初始化图片懒加载（植物图片立即加载）
+                setTimeout(() => {
+                    const plantImg = container.querySelector('img[data-src]');
+                    if (plantImg) {
+                        const dataSrc = plantImg.getAttribute('data-src');
+                        const icon = plantImg.getAttribute('data-icon') || '🌿';
+                        const type = plantImg.getAttribute('data-type') || 'hero';
+                        loadImageWithCache(plantImg, dataSrc, icon, type);
+                    }
+                }, 50);
+                return;
+            }
+            
+            // 如果选择了节日，显示两列花卉列表
+            if (currentHoliday) {
+                const guide = holidayFlowerGuide[currentHoliday];
+                if (!guide) {
+                    container.innerHTML = '<div class="container"><div class="card"><div class="section-title">暂无数据</div></div></div>';
+                    return;
+                }
+                
+                const suitableIndices = getFlowersForHoliday(currentHoliday);
+                const totalPages = Math.ceil(suitableIndices.length / 2);
+                const startIndex = currentPageIndex * 2;
+                
+                // 确保每次显示2个花卉，支持循环滚动
+                let currentFlowers = [];
+                if (suitableIndices.length <= 2) {
+                    // 如果总数<=2，直接显示所有
+                    currentFlowers = suitableIndices.slice();
+                } else {
+                    // 如果总数>2，每次显示2个，支持循环
+                    for (let i = 0; i < 2; i++) {
+                        const actualIndex = (startIndex + i) % suitableIndices.length;
+                        currentFlowers.push(suitableIndices[actualIndex]);
+                    }
+                }
+                
+                // 创建花卉卡片
+                const flowerCards = currentFlowers.map(index => {
+                    // 处理负数索引（不在数据库中的花卉，如艾草、菖蒲）
+                    if (index < 0) {
+                        const recIndex = Math.abs(index) - 1000;
+                        const rec = guide.recommended[recIndex];
+                        if (!rec) return '';
+                        
+                        // 对于传统植物，优先使用plantData中的图片，否则使用Unsplash搜索真实图片
+                        let plantImageUrl;
+                        if (typeof plantData !== 'undefined' && plantData[rec.flower] && plantData[rec.flower].imageUrl) {
+                            plantImageUrl = plantData[rec.flower].imageUrl;
+                        } else {
+                            // 使用更具体的搜索词确保获取真实植物图片
+                            const plantSearchMap = {
+                                '艾草': 'mugwort,artemisia,herb,plant',
+                                '菖蒲': 'calamus,acorus,plant',
+                                '茱萸': 'cornel,berry,plant',
+                                '桂花': 'osmanthus,flower'
+                            };
+                            const searchTerm = plantSearchMap[rec.flower] || rec.flower + ' plant';
+                            plantImageUrl = `https://source.unsplash.com/featured/200x200/?${encodeURIComponent(searchTerm)}&sig=${Math.random()}`;
+                        }
+                        return `
+                            <div class="flower-grid-item" data-plant-name="${rec.flower}" style="cursor: pointer;">
+                                <div class="flower-grid-image-container">
+                                    <img data-src="${plantImageUrl}" data-icon="🌿" data-type="grid" alt="${rec.flower}" class="flower-grid-image" 
+                                         loading="lazy">
+                                </div>
+                                <div class="flower-grid-name">${rec.flower}</div>
+                                <div class="flower-grid-name-en">传统植物</div>
+                                <div class="flower-grid-language">传统习俗</div>
+                                <div class="flower-grid-recommend">推荐：${rec.count}<br>寓意：${rec.meaning}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    // 在数据库中的花卉
+                    const flower = flowerData[index];
+                    const rec = guide.recommended.find(r => {
+                        const f = findFlowerByName(r.flower);
+                        return f && flowerData.indexOf(f) === index;
+                    });
+                    
+                    // 使用真实图片，优先使用数据中的imageUrl，确保URL完整
+                    let imageUrl = flower.imageUrl || getFlowerImageUrlDirect(flower.nameEn, 200);
+                    // 确保URL包含必要的参数
+                    if (imageUrl && !imageUrl.includes('&q=')) {
+                        imageUrl += (imageUrl.includes('?') ? '&' : '?') + 'q=80&auto=format';
+                    }
+                    // 使用缓存系统加载图片（使用 data-src 实现懒加载）
+                    const imageHtml = `<div class="flower-grid-image-container">
+                        <img data-src="${imageUrl}" data-icon="${flower.icon}" data-type="grid" alt="${flower.name}" class="flower-grid-image" 
+                             loading="lazy">
+                    </div>`;
+                    
+                    return `
+                        <div class="flower-grid-item" data-flower-index="${index}" style="cursor: pointer;">
+                            ${imageHtml}
+                            <div class="flower-grid-name">${flower.name}</div>
+                            <div class="flower-grid-name-en">${flower.nameEn}</div>
+                            <div class="flower-grid-language">${flower.language}</div>
+                            ${rec ? `<div class="flower-grid-recommend">推荐：${rec.count}<br>寓意：${rec.meaning}</div>` : ''}
+                        </div>
+                    `;
+                }).filter(card => card !== '');
+                
+                // 确保始终显示2个卡片（如果只有1个，添加空占位；如果超过2个，确保显示2个）
+                if (flowerCards.length === 0) {
+                    // 如果没有卡片，显示空状态
+                    flowerCards.push('<div class="flower-grid-item" style="opacity: 0; pointer-events: none;"></div>');
+                    flowerCards.push('<div class="flower-grid-item" style="opacity: 0; pointer-events: none;"></div>');
+                } else if (flowerCards.length === 1) {
+                    // 如果只有1个，添加空占位
+                    flowerCards.push('<div class="flower-grid-item" style="opacity: 0; pointer-events: none;"></div>');
+                } else if (flowerCards.length > 2) {
+                    // 如果超过2个，只取前2个（理论上不应该发生，但保险起见）
+                    flowerCards = flowerCards.slice(0, 2);
+                }
+                
+                container.innerHTML = `
+                    <div class="container">
+                        <div class="card">
+                            <div class="section-title"><i class="fas fa-calendar-alt"></i> ${currentHoliday} - 推荐花卉</div>
+                            <div class="flower-grid-container">
+                                <div class="flower-grid">
+                                    ${flowerCards.join('')}
+                                </div>
+                                ${totalPages > 1 ? `
+                                <div class="flower-grid-nav">
+                                    <button class="flower-nav-btn" id="prev-flower-page">‹</button>
+                                    <button class="flower-nav-btn" id="next-flower-page">›</button>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                // 初始化图片懒加载
+                setTimeout(() => {
+                    initImageLazyLoad();
+                }, 100);
+                return;
+            }
+            
+            // 如果没有选择节日，显示单个花卉详情
+            const flower = flowerData[currentFlowerIndex];
+            
+            // 使用真实图片，优先使用数据中的imageUrl，确保URL完整
+            let imageUrl = flower.imageUrl || getFlowerImageUrlDirect(flower.nameEn, 400);
+            // 确保URL包含必要的参数
+            if (imageUrl && !imageUrl.includes('&q=')) {
+                imageUrl += (imageUrl.includes('?') ? '&' : '?') + 'q=80&auto=format';
+            }
+            // 使用缓存系统加载图片（hero 图片立即加载，不使用懒加载）
+            const heroImageHtml = `<div class="flower-image-container">
+                <img data-src="${imageUrl}" data-icon="${flower.icon}" data-type="hero" alt="${flower.name}" class="flower-image" 
+                     loading="lazy">
+            </div>`;
+            
+            container.innerHTML = `
+                <div class="flower-hero">
+                    ${heroImageHtml}
+                    <div class="flower-name">${flower.name}</div>
+                    <div class="flower-name-en">${flower.nameEn}</div>
+                    <div class="flower-language">${flower.language}</div>
+                </div>
+                
+                <div class="container">
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-heart"></i> 花语寓意</div>
+                        <div class="meaning-box">
+                            ${flower.meaning}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-calendar-check"></i> 适合节日</div>
+                        ${flower.suitableHolidays.map(holiday => `
+                            <div class="holiday-card">
+                                <div class="holiday-title">${holiday.holiday}</div>
+                                <div class="holiday-item">
+                                    <div class="holiday-name">推荐：${holiday.recommendation}</div>
+                                    <div class="holiday-detail">寓意：${holiday.meaning}</div>
+                                    <div class="holiday-detail">颜色：${holiday.color}</div>
+                                    <div class="holiday-tips">💡 ${holiday.tips}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-seedling"></i> 养护方法</div>
+                        <div class="care-grid">
+                            <div class="care-item">
+                                <div class="care-label">光照</div>
+                                <div class="care-value">${flower.care.light}</div>
+                            </div>
+                            <div class="care-item">
+                                <div class="care-label">浇水</div>
+                                <div class="care-value">${flower.care.water}</div>
+                            </div>
+                            <div class="care-item">
+                                <div class="care-label">温度</div>
+                                <div class="care-value">${flower.care.temperature}</div>
+                            </div>
+                            ${flower.care.fertilizer ? `
+                            <div class="care-item">
+                                <div class="care-label">施肥</div>
+                                <div class="care-value">${flower.care.fertilizer}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <div class="care-tips">
+                            <strong>💡 养护小贴士：</strong>${flower.care.tips}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="section-title"><i class="fas fa-info-circle"></i> 其他信息</div>
+                        <div class="info-row">
+                            <span class="label">花期/季节</span>
+                            <span class="value">${flower.season}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">价格参考</span>
+                            <span class="value">${flower.price}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">主要颜色</span>
+                            <span class="value">
+                                <div class="color-tags">
+                                    ${flower.color.map(c => `<span class="color-tag">${c}</span>`).join('')}
+                                </div>
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">原产地</span>
+                            <span class="value">${flower.origin}</span>
+                        </div>
+                        ${flower.tips ? `
+                        <div class="info-row">
+                            <span class="label">送花小贴士</span>
+                            <span class="value" style="font-size: 12px; text-align: right;">${flower.tips}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            // 初始化图片懒加载（hero图片立即加载）
+            setTimeout(() => {
+                const heroImg = container.querySelector('img[data-src]');
+                if (heroImg) {
+                    const dataSrc = heroImg.getAttribute('data-src');
+                    const icon = heroImg.getAttribute('data-icon') || '🌺';
+                    const type = heroImg.getAttribute('data-type') || 'hero';
+                    loadImageWithCache(heroImg, dataSrc, icon, type);
+                }
+            }, 50);
+        }
+        
+        function renderHolidayGuide() {
+            const container = document.getElementById('holiday-guide');
+            const holidays = Object.keys(holidayFlowerGuide);
+            
+            // 如果选择了特定节日，显示该节日的花卉列表；否则显示全部节日指南
+            if (currentHoliday) {
+                const guide = holidayFlowerGuide[currentHoliday];
+                if (!guide) {
+                    container.innerHTML = '<div class="guide-holiday"><div class="guide-holiday-title">暂无数据</div></div>';
+                    return;
+                }
+                
+                // 不再在这里显示列表，因为已经在renderFlower中显示两列了
+                const flowerList = '';
+                
+                container.innerHTML = `
+                    <div class="guide-holiday">
+                        <div class="guide-holiday-title">${currentHoliday}</div>
+                        <div class="guide-holiday-date">📅 ${guide.date}</div>
+                        <div class="guide-tips">
+                            💡 ${guide.tips}
+                        </div>
+                        ${guide.color ? `<div class="guide-tips" style="margin-top: 8px;">🎨 推荐颜色：${guide.color}</div>` : ''}
+                    </div>
+                `;
+            } else {
+                // 显示全部节日指南
+                const displayHolidays = holidays;
+                
+                if (displayHolidays.length === 0) {
+                    container.innerHTML = '<div class="guide-holiday"><div class="guide-holiday-title">暂无数据</div></div>';
+                    return;
+                }
+                
+                container.innerHTML = displayHolidays.map(holiday => {
+                    const guide = holidayFlowerGuide[holiday];
+                    return `
+                        <div class="guide-holiday">
+                            <div class="guide-holiday-title">${holiday}</div>
+                            <div class="guide-holiday-date">📅 ${guide.date}</div>
+                            <div class="guide-recommendation">
+                                ${guide.recommended.map(rec => `
+                                    <div class="guide-flower-item">
+                                        <strong>${rec.flower}</strong> ${rec.count} - ${rec.meaning}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="guide-tips">
+                                💡 ${guide.tips}
+                            </div>
+                            ${guide.color ? `<div class="guide-tips" style="margin-top: 8px;">🎨 推荐颜色：${guide.color}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+        
+        function setupEventDelegation() {
+            document.getElementById('flower-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('[data-flower-index]');
+                if (tag) switchFlower(parseInt(tag.dataset.flowerIndex));
+            });
+            document.getElementById('holiday-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('[data-holiday]');
+                if (tag) switchHoliday(tag.dataset.holiday || null);
+            });
+            const plantTags = document.getElementById('plant-tags');
+            if (plantTags) {
+                plantTags.addEventListener('click', (e) => {
+                    const tag = e.target.closest('[data-plant]');
+                    if (tag) switchPlant(tag.dataset.plant || null);
+                });
+            }
+            document.getElementById('flower-content').addEventListener('click', (e) => {
+                const plantItem = e.target.closest('[data-plant-name]');
+                if (plantItem) { switchPlant(plantItem.dataset.plantName); return; }
+                const flowerItem = e.target.closest('[data-flower-index]');
+                if (flowerItem) { switchFlower(parseInt(flowerItem.dataset.flowerIndex)); return; }
+                if (e.target.closest('#prev-flower-page')) prevFlowerPage();
+                if (e.target.closest('#next-flower-page')) nextFlowerPage();
+            });
+        }
+
+        onReady(() => {
+            init();
+            setupEventDelegation();
+        });
+    </script>
+</body>
+</html>

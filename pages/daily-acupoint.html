@@ -199,9 +199,10 @@
         </div>
     </div>
     
-    <script src="js/common.js"></script>
-    <script src="js/acupoint-data.js"></script>
-    <script>
+    <script type="module">
+        import { getTodayString, getDayOfYear, storage, onReady } from '../js/common.js';
+        import { dailyAcupointList } from '../js/acupoint-data.js';
+
         let currentAcupointIndex = 0;
         let learnedAcupoints = [];
         
@@ -223,7 +224,7 @@
             container.innerHTML = dailyAcupointList.map((ap, i) => {
                 const isLearned = learnedAcupoints.includes(ap.name);
                 const isActive = i === currentAcupointIndex;
-                return `<span class="acupoint-tag ${isActive ? 'active' : ''} ${isLearned ? 'learned' : ''}" onclick="switchAcupoint(${i})">${ap.name}</span>`;
+                return `<span class="acupoint-tag ${isActive ? 'active' : ''} ${isLearned ? 'learned' : ''}" data-acupoint-index="${i}">${ap.name}</span>`;
             }).join('');
         }
         
@@ -280,7 +281,7 @@
                     </div>
                     
                     <div class="card">
-                        <button class="learn-btn ${isLearned ? 'learned' : ''}" onclick="markAsLearned()" ${isLearned ? 'disabled' : ''}>
+                        <button class="learn-btn ${isLearned ? 'learned' : ''}" id="mark-learned-btn" ${isLearned ? 'disabled' : ''}>
                             ${isLearned ? '✓ 已学习' : '📚 标记为已学习'}
                         </button>
                     </div>
@@ -288,7 +289,20 @@
             `;
         }
         
-        onReady(init);
+        onReady(() => {
+            document.getElementById('acupoint-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('.acupoint-tag');
+                if (tag && tag.dataset.acupointIndex !== undefined) {
+                    switchAcupoint(parseInt(tag.dataset.acupointIndex));
+                }
+            });
+            document.getElementById('acupoint-content').addEventListener('click', (e) => {
+                if (e.target.closest('#mark-learned-btn')) {
+                    markAsLearned();
+                }
+            });
+            init();
+        });
     </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 // 公共函数 - TCM养生应用
 
 // 获取今天是一年中的第几天
-function getDayOfYear() {
+export function getDayOfYear() {
     const today = new Date();
     const start = new Date(today.getFullYear(), 0, 0);
     const diff = today - start;
@@ -10,19 +10,19 @@ function getDayOfYear() {
 }
 
 // 格式化今日日期
-function getTodayString() {
+export function getTodayString() {
     const today = new Date();
     return `${today.getMonth() + 1}月${today.getDate()}日`;
 }
 
 // 根据日期轮换获取数组中的项
-function getDailyItem(array) {
+export function getDailyItem(array) {
     const dayOfYear = getDayOfYear();
     return array[dayOfYear % array.length];
 }
 
 // localStorage 工具函数
-const storage = {
+export const storage = {
     get(key, defaultValue = null) {
         try {
             const item = localStorage.getItem(key);
@@ -44,19 +44,19 @@ const storage = {
 };
 
 // 返回首页
-function goHome() {
+export function goHome() {
     window.location.href = 'index.html';
 }
 
 // 计算两点之间的距离（用于定位）
-function calculateDistance(lat1, lng1, lat2, lng2) {
+export function calculateDistance(lat1, lng1, lat2, lng2) {
     const latDiff = lat1 - lat2;
     const lngDiff = lng1 - lng2;
     return Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
 }
 
 // 获取用户位置
-function getUserLocation(callback, errorCallback) {
+export function getUserLocation(callback, errorCallback) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -78,12 +78,12 @@ function getUserLocation(callback, errorCallback) {
 }
 
 // 显示加载状态
-function showLoading(container) {
+export function showLoading(container) {
     container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
 }
 
 // 页面初始化完成后执行
-function onReady(callback) {
+export function onReady(callback) {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', callback);
     } else {

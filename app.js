@@ -85,7 +85,7 @@ const dailyAcupointList = [
 ];
 
 // 获取今日穴位（根据日期固定）
-function getDailyAcupoint() {
+export function getDailyAcupoint() {
     const today = new Date();
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
     const index = dayOfYear % dailyAcupointList.length;
@@ -93,7 +93,7 @@ function getDailyAcupoint() {
 }
 
 // 初始化每日穴位显示
-function initDailyAcupoint() {
+export function initDailyAcupoint() {
     const acupoint = getDailyAcupoint();
     const today = new Date();
     const dateStr = `${today.getMonth() + 1}月${today.getDate()}日`;
@@ -104,7 +104,7 @@ function initDailyAcupoint() {
 }
 
 // 显示每日穴位详情
-function showDailyAcupoint() {
+export function showDailyAcupoint() {
     const acupoint = getDailyAcupoint();
     
     // 记录学习
@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initDailyTea();
     initDailyWine();
     initDailyTide();
+    initDailyFlower();
 });
 
 // ==================== 潮汐与水产数据 ====================
@@ -551,14 +552,14 @@ const tideLocations = [
 let currentTideIndex = 0;
 
 // 计算两点之间的距离（简化版，使用欧几里得距离）
-function calculateDistance(lat1, lng1, lat2, lng2) {
+export function calculateDistance(lat1, lng1, lat2, lng2) {
     const latDiff = lat1 - lat2;
     const lngDiff = lng1 - lng2;
     return Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
 }
 
 // 根据位置找到最近的沿海城市
-function findNearestTideCity(userLat, userLng) {
+export function findNearestTideCity(userLat, userLng) {
     let minDistance = Infinity;
     let nearestIndex = 0;
     
@@ -574,12 +575,12 @@ function findNearestTideCity(userLat, userLng) {
 }
 
 // 获取当前潮汐数据
-function getDailyTide() {
+export function getDailyTide() {
     return tideData[currentTideIndex];
 }
 
 // 初始化潮汐（使用地理定位）
-function initDailyTide() {
+export function initDailyTide() {
     const today = new Date();
     document.getElementById('tide-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
     
@@ -614,21 +615,21 @@ function initDailyTide() {
 }
 
 // 更新潮汐显示
-function updateTideDisplay() {
+export function updateTideDisplay() {
     const tide = getDailyTide();
     document.getElementById('tide-name').textContent = tide.location;
     document.getElementById('tide-desc').textContent = `${tide.region} · 高潮${tide.highTide1}`;
 }
 
 // 切换潮汐城市
-function switchTideCity(index) {
+export function switchTideCity(index) {
     currentTideIndex = index;
     updateTideDisplay();
     showDailyTide(); // 刷新详情页
 }
 
 // 显示潮汐详情
-function showDailyTide() {
+export function showDailyTide() {
     const tide = getDailyTide();
     const resultsDiv = document.getElementById('results');
     
@@ -1261,28 +1262,38 @@ const wineData = [
 ];
 
 // 获取今日运动
-function getDailyFitness() {
+export function getDailyFitness() {
     const today = new Date();
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
     return fitnessData[dayOfYear % fitnessData.length];
 }
 
 // 获取今日茶
-function getDailyTea() {
+export function getDailyTea() {
     const today = new Date();
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
     return teaData[dayOfYear % teaData.length];
 }
 
 // 获取今日酒
-function getDailyWine() {
+export function getDailyWine() {
     const today = new Date();
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
     return wineData[dayOfYear % wineData.length];
 }
 
+// 获取今日花卉
+export function getDailyFlower() {
+    if (typeof flowerData === 'undefined') {
+        return null;
+    }
+    const today = new Date();
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    return flowerData[dayOfYear % flowerData.length];
+}
+
 // 初始化运动健康
-function initDailyFitness() {
+export function initDailyFitness() {
     const fitness = getDailyFitness();
     const today = new Date();
     document.getElementById('fitness-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
@@ -1291,7 +1302,7 @@ function initDailyFitness() {
 }
 
 // 初始化茶道
-function initDailyTea() {
+export function initDailyTea() {
     const tea = getDailyTea();
     const today = new Date();
     document.getElementById('tea-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
@@ -1300,7 +1311,7 @@ function initDailyTea() {
 }
 
 // 初始化酒道
-function initDailyWine() {
+export function initDailyWine() {
     const wine = getDailyWine();
     const today = new Date();
     document.getElementById('wine-date').textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
@@ -1308,8 +1319,30 @@ function initDailyWine() {
     document.getElementById('wine-desc').textContent = `${wine.type} · ${wine.rating}`;
 }
 
+// 初始化花语
+export function initDailyFlower() {
+    // 检查元素是否存在，避免在非花语页面报错
+    const flowerDateEl = document.getElementById('flower-date');
+    const flowerNameEl = document.getElementById('flower-name');
+    const flowerDescEl = document.getElementById('flower-desc');
+    
+    if (!flowerDateEl || !flowerNameEl || !flowerDescEl) {
+        return; // 如果元素不存在，直接返回
+    }
+    
+    const flower = getDailyFlower();
+    if (!flower) {
+        return; // 如果数据未加载，直接返回
+    }
+    
+    const today = new Date();
+    flowerDateEl.textContent = `${today.getMonth() + 1}月${today.getDate()}日`;
+    flowerNameEl.textContent = flower.name;
+    flowerDescEl.textContent = `${flower.language} · ${flower.origin}`;
+}
+
 // 显示运动健康详情
-function showDailyFitness() {
+export function showDailyFitness() {
     const fitness = getDailyFitness();
     const resultsDiv = document.getElementById('results');
     
@@ -1381,7 +1414,7 @@ function showDailyFitness() {
 }
 
 // 显示茶道详情
-function showDailyTea() {
+export function showDailyTea() {
     const tea = getDailyTea();
     const resultsDiv = document.getElementById('results');
     
@@ -1464,7 +1497,7 @@ function showDailyTea() {
 }
 
 // 显示酒道详情
-function showDailyWine() {
+export function showDailyWine() {
     const wine = getDailyWine();
     const resultsDiv = document.getElementById('results');
     
@@ -1859,7 +1892,7 @@ const solarTermsData = [
 ];
 
 // 获取当前节气
-function getCurrentSolarTerm() {
+export function getCurrentSolarTerm() {
     const now = new Date();
     const month = now.getMonth() + 1;
     const day = now.getDate();
@@ -1876,7 +1909,7 @@ function getCurrentSolarTerm() {
 }
 
 // 初始化每日饮食显示
-function initDailyDiet() {
+export function initDailyDiet() {
     const term = getCurrentSolarTerm();
     document.getElementById('diet-solar-term').textContent = term.name;
     document.getElementById('diet-principle').textContent = term.principle;
@@ -1884,7 +1917,7 @@ function initDailyDiet() {
 }
 
 // 显示每日饮食详情
-function showDailyDiet() {
+export function showDailyDiet() {
     const term = getCurrentSolarTerm();
     const resultsDiv = document.getElementById('results');
     
@@ -2620,7 +2653,7 @@ function switchPage(pageName) {
 }
 
 // 搜索症状
-function searchSymptom() {
+export function searchSymptom() {
     const input = document.getElementById('search-input');
     const query = input.value.trim();
     if (query) {
@@ -2784,7 +2817,7 @@ function renderResults(symptom, data, originalQuery = '') {
 }
 
 // 渲染穴位卡片
-function renderAcupointCard(acupoint, category = '') {
+export function renderAcupointCard(acupoint, category = '') {
     const isFavorited = favorites.some(f => f.name === acupoint.name);
     const favoriteId = `${acupoint.name}_${category}`;
     
@@ -2858,7 +2891,7 @@ function renderAcupointCard(acupoint, category = '') {
 }
 
 // 隐藏结果
-function hideResults() {
+export function hideResults() {
     document.getElementById('results').classList.remove('show');
     document.getElementById('search-input').value = '';
 }

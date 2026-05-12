@@ -1,5 +1,5 @@
 // 茶道数据
-const teaData = [
+export const teaData = [
     {
         name: '西湖龙井',
         type: '绿茶',

@@ -254,9 +254,9 @@
         </div>
     </div>
     
-    <script src="js/common.js"></script>
-    <script src="js/acupoint-data.js"></script>
-    <script>
+    <script type="module">
+        import { acupointData, dailyAcupointList, symptomSynonyms } from '../js/acupoint-data.js';
+
         function searchSymptom() {
             const input = document.getElementById('search-input').value.trim();
             if (input) {
@@ -363,12 +363,12 @@
             resultsDiv.innerHTML = `
                 <div class="result-header">
                     <h2>搜索结果</h2>
-                    <button class="close-btn" onclick="hideResults()"><i class="fas fa-times"></i> 关闭</button>
+                    <button class="close-btn" id="close-results-btn"><i class="fas fa-times"></i> 关闭</button>
                 </div>
                 <div class="empty-state">
                     <i class="fas fa-search"></i>
                     <p>未找到"${symptom}"相关的穴位信息</p>
-                    <p style="font-size: 13px; margin-top: 10px;">试试这些：${suggestions.map(s => `<span class="symptom-tag" onclick="selectSymptom('${s}')" style="margin: 4px;">${s}</span>`).join('')}</p>
+                    <p style="font-size: 13px; margin-top: 10px;">试试这些：${suggestions.map(s => `<span class="symptom-tag suggestion-tag" data-symptom="${s}" style="margin: 4px;">${s}</span>`).join('')}</p>
                 </div>
             `;
             
@@ -383,6 +383,28 @@
         document.getElementById('search-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchSymptom();
+            }
+        });
+
+        // 事件委托：关闭按钮和症状建议标签
+        document.getElementById('results').addEventListener('click', function(e) {
+            if (e.target.closest('#close-results-btn')) {
+                hideResults();
+            }
+            const sugTag = e.target.closest('.suggestion-tag');
+            if (sugTag && sugTag.dataset.symptom) {
+                selectSymptom(sugTag.dataset.symptom);
+            }
+        });
+
+        // 搜索按钮
+        document.querySelector('.search-box button').addEventListener('click', searchSymptom);
+
+        // 症状标签点击
+        document.querySelector('.tags-grid').addEventListener('click', function(e) {
+            const tag = e.target.closest('.symptom-tag');
+            if (tag) {
+                selectSymptom(tag.textContent.trim());
             }
         });
     </script>

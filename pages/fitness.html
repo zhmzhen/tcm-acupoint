@@ -201,9 +201,10 @@
         </div>
     </div>
     
-    <script src="js/common.js"></script>
-    <script src="js/fitness-data.js"></script>
-    <script>
+    <script type="module">
+        import { getTodayString, getDayOfYear, onReady } from '../js/common.js';
+        import { fitnessData } from '../js/fitness-data.js';
+
         let currentFitnessIndex = 0;
         
         function init() {
@@ -216,7 +217,7 @@
         function renderFitnessTags() {
             const container = document.getElementById('fitness-tags');
             container.innerHTML = fitnessData.map((f, i) => `
-                <span class="fitness-tag ${i === currentFitnessIndex ? 'active' : ''}" onclick="switchFitness(${i})">${f.name}</span>
+                <span class="fitness-tag ${i === currentFitnessIndex ? 'active' : ''}" data-fitness-index="${i}">${f.name}</span>
             `).join('');
         }
         
@@ -290,7 +291,15 @@
             `;
         }
         
-        onReady(init);
+        onReady(() => {
+            document.getElementById('fitness-tags').addEventListener('click', (e) => {
+                const tag = e.target.closest('.fitness-tag');
+                if (tag && tag.dataset.fitnessIndex !== undefined) {
+                    switchFitness(parseInt(tag.dataset.fitnessIndex));
+                }
+            });
+            init();
+        });
     </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 // 运动健康数据
-const fitnessData = [
+export const fitnessData = [
     {
         name: '颈椎康复操',
         targetSymptoms: ['颈椎痛', '肩颈僵硬', '头痛'],

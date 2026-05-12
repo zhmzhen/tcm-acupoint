@@ -1,5 +1,5 @@
 // 穴位数据库
-const acupointData = {
+export const acupointData = {
     // ========== 症状对应穴位 ==========
     "头痛": {
         acupoints: [

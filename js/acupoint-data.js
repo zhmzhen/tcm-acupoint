@@ -1,5 +1,5 @@
 // 穴位数据
-const dailyAcupointList = [
+export const dailyAcupointList = [
     { name: '合谷穴', pinyin: 'Hegu', meridian: '手阳明大肠经', location: '手背第1、2掌骨间，第2掌骨桡侧中点', effects: ['头痛', '牙痛', '感冒', '面瘫'], bodyPart: '手部' },
     { name: '足三里', pinyin: 'Zusanli', meridian: '足阳明胃经', location: '小腿前外侧，犊鼻下3寸', effects: ['胃痛', '腹胀', '消化不良', '增强免疫'], bodyPart: '腿部' },
     { name: '太阳穴', pinyin: 'Taiyang', meridian: '经外奇穴', location: '眉梢与目外眦之间，向后约1寸凹陷处', effects: ['头痛', '偏头痛', '眼疲劳', '失眠'], bodyPart: '头部' },
@@ -33,7 +33,7 @@ const dailyAcupointList = [
 ];
 
 // 症状-穴位映射数据
-const acupointData = {
+export const acupointData = {
     '头痛': { points: ['太阳穴', '风池穴', '百会穴', '合谷穴'], diet: ['菊花茶', '薄荷', '绿豆'], massage: '用拇指按揉太阳穴，每次3-5分钟' },
     '失眠': { points: ['神门穴', '内关穴', '百会穴', '涌泉穴'], diet: ['酸枣仁', '百合', '莲子'], massage: '睡前按揉神门穴，配合深呼吸' },
     '颈椎痛': { points: ['风池穴', '肩井穴', '大椎穴', '后溪穴'], diet: ['葛根', '桑枝', '威灵仙'], massage: '按揉风池穴，配合颈部活动' },
@@ -52,7 +52,7 @@ const acupointData = {
 };
 
 // 症状同义词映射
-const symptomSynonyms = {
+export const symptomSynonyms = {
     '头疼': ['头痛'], '脑袋疼': ['头痛'], '偏头痛': ['头痛'],
     '睡不着': ['失眠'], '入睡困难': ['失眠'], '多梦': ['失眠'],
     '脖子疼': ['颈椎痛'], '颈椎病': ['颈椎痛'], '落枕': ['颈椎痛'],
